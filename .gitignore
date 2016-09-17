@@ -1,0 +1,6 @@
+*.py[cod]
+.*.swp
+.idea/
+*.*~
+logs/
+logs/*
