@@ -6,8 +6,6 @@ import utils.logger as logger
 DHT22_PIN = gpio_pins_conf['DHT22']
 
 class DHT22_sensor(object):
-    def __init__(self):
-        print '>>init'
 
     @classmethod
     def get_state(self):
@@ -22,8 +20,8 @@ class DHT22_sensor(object):
         except:
             answer.update({'status': 'fail'})
             logger.warning('DHT22 fail')
-        # print 'Temp:{0}*C, Humid:{1}%'.format(t, h)
         return answer
+
 
 if __name__=='__main__':
     print DHT22_sensor.get_state()
