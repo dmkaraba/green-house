@@ -33,3 +33,5 @@ for i in range(5):
     GPIO.output(RELAY_PIN_4, GPIO.HIGH)
 
 GPIO.cleanup()
+
+# TODO: write a swich, on, off methods
