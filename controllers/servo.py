@@ -1,7 +1,7 @@
 import time
 import RPi.GPIO as GPIO
-from config import gpio_pins_conf
 import utils.logger as logger
+from config import gpio_pins_conf
 
 
 SERVO_PIN = gpio_pins_conf['servo']
@@ -42,4 +42,10 @@ class Servo(object):
 
 
 if __name__=='__main__':
-        print Servo.set_state(5)
+    print Servo.set_state(0)
+    time.sleep(1)
+    print Servo.set_state(5)
+    time.sleep(1)
+    print Servo.set_state(10)
+    time.sleep(1)
+    print Servo.set_state(5)

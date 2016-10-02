@@ -1,37 +1,60 @@
 import RPi.GPIO as GPIO
+import utils.logger as logger
 from config import gpio_pins_conf
-import time
 
 
-SOIL_MOISTURE_PINS_LIST = [gpio_pins_conf['soil_moisture_a'],]
+SOIL_MOISTURE_PINS_LIST = [gpio_pins_conf['soil_moisture_1'],
+                           gpio_pins_conf['soil_moisture_2'],
+                           gpio_pins_conf['soil_moisture_3'],
+                           gpio_pins_conf['soil_moisture_4']]
 
 
 class SoilMoisruteSensor(object):
 
-    @staticmethod
-    def get_state():
-        answer = dict()
+    def __init__(self):
+        self.SENSOR_1 = SOIL_MOISTURE_PINS_LIST[0]
+        self.SENSOR_2 = SOIL_MOISTURE_PINS_LIST[1]
+        self.SENSOR_3 = SOIL_MOISTURE_PINS_LIST[2]
+        self.SENSOR_4 = SOIL_MOISTURE_PINS_LIST[3]
+        GPIO.setmode(GPIO.BCM)
+
+
+    def __do_measure(self, sensor):
         try:
-            GPIO.setmode(GPIO.BCM)
-            GPIO.setup(SOIL_MOISTURE_PINS_LIST, GPIO.IN)
-            raw_value_a = GPIO.input(SOIL_MOISTURE_PINS_LIST[0])
-            result_a = SoilMoisruteSensor.recalculate(raw_value_a)
-            GPIO.cleanup()
-            answer.update({
-                            'status': 'success',
-                            'result': {
-                                        'sensor_a': result_a,
-                                        'sensor_b': result_a,
-                                        'sensor_c': result_a,
-                                        'sensor_d': result_a
-                                        }
-            })
+            raw_value = GPIO.input(sensor)
+            result = self.__recalculate(raw_value)
+            logger.info('Soil moisture sensor pin: {0}. '
+                        'Result: {1}'.format(sensor, result))
+            return result
         except:
-            answer.update({'status': 'fail'})
+            logger.warning('Soil moisture sensor pin: {} FAIL')
+            return -1
+
+    def get_states(self):
+        answer = dict()
+        result_1 = self.__do_measure(self.SENSOR_1)
+        result_2 = self.__do_measure(self.SENSOR_2)
+        result_3 = self.__do_measure(self.SENSOR_3)
+        result_4 = self.__do_measure(self.SENSOR_4)
+        GPIO.cleanup()
+        # TODO: implement partly success answer
+        answer.update({
+            'status': 'success',
+            'result': {
+                'sensor_1': result_1,
+                'sensor_2': result_2,
+                'sensor_3': result_3,
+                'sensor_4': result_4
+            }
+        })
         return answer
 
-    @staticmethod
-    def recalculate(val):
+    def __recalculate(self, val):
+        """
+        DAC will be implemented here
+        :param val:
+        :return:
+        """
         if val:
             return 0
         else:
@@ -39,4 +62,4 @@ class SoilMoisruteSensor(object):
 
 
 if __name__=='__main__':
-    print SoilMoisruteSensor.get_state()
+    print SoilMoisruteSensor().get_states()

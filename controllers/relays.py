@@ -1,37 +1,49 @@
-from time import sleep
+import time
 import RPi.GPIO as GPIO
 from config import gpio_pins_conf
 import utils.logger as logger
 
 
-RELAY_PIN_1 = gpio_pins_conf['relay_1']
-RELAY_PIN_2 = gpio_pins_conf['relay_2']
-RELAY_PIN_3 = gpio_pins_conf['relay_3']
-RELAY_PIN_4 = gpio_pins_conf['relay_4']
+class RelayBase(object):
 
-channels = [RELAY_PIN_1, RELAY_PIN_2, RELAY_PIN_3, RELAY_PIN_4]
+    RELAY = None
 
-GPIO.setmode(GPIO.BCM)
-GPIO.setup(channels, GPIO.OUT, initial=GPIO.HIGH)
+    @classmethod
+    def on(cls):
+        GPIO.output(cls.RELAY, GPIO.LOW)
+        return {'status': 'success', 'result': True}
 
-for i in range(5):
-    sleep(0.1)
-    GPIO.output(RELAY_PIN_1, GPIO.LOW)
-    sleep(0.1)
-    GPIO.output(RELAY_PIN_2, GPIO.LOW)
-    sleep(0.1)
-    GPIO.output(RELAY_PIN_3, GPIO.LOW)
-    sleep(0.1)
-    GPIO.output(RELAY_PIN_4, GPIO.LOW)
-    sleep(0.1)
-    GPIO.output(RELAY_PIN_1, GPIO.HIGH)
-    sleep(0.1)
-    GPIO.output(RELAY_PIN_2, GPIO.HIGH)
-    sleep(0.1)
-    GPIO.output(RELAY_PIN_3, GPIO.HIGH)
-    sleep(0.1)
-    GPIO.output(RELAY_PIN_4, GPIO.HIGH)
+    @classmethod
+    def off(cls):
+        GPIO.output(cls.RELAY, GPIO.HIGH)
+        return {'status': 'success', 'result': False}
 
-GPIO.cleanup()
+    @classmethod
+    def switch(cls):
+        switched_state = not GPIO.input(cls.RELAY)
+        GPIO.output(cls.RELAY, switched_state)
+        return {'status': 'success', 'result': switched_state}
 
-# TODO: write a swich, on, off methods
+    @classmethod
+    def get_state(cls):
+        state = not GPIO.input(cls.RELAY)
+        return {'status': 'success', 'result': state}
+
+    @classmethod
+    def tear_down(cls):
+        GPIO.cleanup()
+        return {'status': 'success', 'result': {}}
+
+
+class Lights(RelayBase):
+    RELAY = gpio_pins_conf['relay_1']
+    GPIO.setmode(GPIO.BCM)
+    GPIO.setup(RELAY, GPIO.OUT, initial=GPIO.HIGH)
+
+
+class Pump(RelayBase):
+    pass
+
+
+class Fan(RelayBase):
+    pass

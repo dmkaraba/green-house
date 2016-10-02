@@ -1,6 +1,7 @@
 import Adafruit_DHT as dht
 from config import gpio_pins_conf
 import utils.logger as logger
+import time
 
 
 DHT22_PIN = gpio_pins_conf['DHT22']
@@ -24,4 +25,6 @@ class DHT22_sensor(object):
 
 
 if __name__=='__main__':
-    print DHT22_sensor.get_state()
+    while True:
+        time.sleep(1)
+        print DHT22_sensor.get_state()

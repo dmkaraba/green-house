@@ -35,9 +35,10 @@ SENSOR_B = sensor_ids['ds18b20_b']
 ##############################
 
 temp_sensor_a = "/sys/bus/w1/devices/{}/w1_slave".format(SENSOR_A)
+temp_sensor_b = "/sys/bus/w1/devices/{}/w1_slave".format(SENSOR_B)
 
 def read_temp_raw():
-	f = open(temp_sensor_a, 'r')
+	f = open(temp_sensor_b, 'r')
 	lines = f.readlines()
 	f.close()
 	return lines
@@ -54,5 +55,5 @@ def read_temp():
 		return temp
 
 while True:
-	print read_temp()
 	time.sleep(1)
+	print read_temp()
