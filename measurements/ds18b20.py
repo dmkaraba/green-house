@@ -1,6 +1,7 @@
 import time
-from config import sensor_ids
 import utils.logger as logger
+from config import sensor_ids
+from measurements import BaseSensor
 
 
 SENSOR_A = sensor_ids['ds18b20_a']
@@ -37,11 +38,18 @@ SENSOR_B = sensor_ids['ds18b20_b']
 temp_sensor_a = "/sys/bus/w1/devices/{}/w1_slave".format(SENSOR_A)
 temp_sensor_b = "/sys/bus/w1/devices/{}/w1_slave".format(SENSOR_B)
 
-def read_temp_raw():
-	f = open(temp_sensor_b, 'r')
-	lines = f.readlines()
-	f.close()
-	return lines
+
+class DS18B20(BaseSensor):
+
+	@classmethod
+	def do_measure(cls):
+		pass
+
+	def read_temp_raw(self):
+		with open(temp_sensor_b, 'r') as f:
+			# f = open(temp_sensor_b, 'r')
+			lines = f.readlines()
+		return lines
 
 def read_temp():
 	lines = read_temp_raw()
@@ -57,3 +65,28 @@ def read_temp():
 while True:
 	time.sleep(1)
 	print read_temp()
+
+
+
+class DS18B201(BaseSensor):
+
+	@classmethod
+	def do_measure(cls):
+		pass
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

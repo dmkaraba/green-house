@@ -1,20 +1,19 @@
 import Adafruit_DHT as dht
-from config import gpio_pins_conf
 import utils.logger as logger
-import time
+from config import gpio_pins_conf
+from measurements import BaseSensor
 
 
-DHT22_PIN = gpio_pins_conf['DHT22']
+class DHT22(BaseSensor):
 
-class DHT22_sensor(object):
+    DHT22_PIN = gpio_pins_conf['DHT22']
 
     @classmethod
-    def get_state(self):
+    def do_measure(cls):
         answer = dict()
         try:
-            h, t = dht.read_retry(dht.DHT22, DHT22_PIN, delay_seconds=3)
-            h = float("%.1f" % h)
-            t = float("%.1f" % t)
+            h, t = dht.read_retry(dht.DHT22, cls.DHT22_PIN, delay_seconds=3)
+            h, t = float("%.1f" % h), float("%.1f" % t)
             logger.info('DHT22 asked. T: {}, H: {}'.format(t, h))
             answer.update({'status': 'success',
                            'result': {'temperature': t, 'humidity': h}})
@@ -23,8 +22,3 @@ class DHT22_sensor(object):
             logger.warning('DHT22 fail')
         return answer
 
-
-if __name__=='__main__':
-    while True:
-        time.sleep(1)
-        print DHT22_sensor.get_state()
