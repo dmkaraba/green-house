@@ -17,6 +17,7 @@ class SoilMoisruteSensor(object):
         self.SENSOR_3 = SOIL_MOISTURE_PINS_LIST[2]
         self.SENSOR_4 = SOIL_MOISTURE_PINS_LIST[3]
         GPIO.setmode(GPIO.BCM)
+        GPIO.setup(SOIL_MOISTURE_PINS_LIST, GPIO.IN)
 
 
     def __do_measure(self, sensor):
@@ -37,7 +38,7 @@ class SoilMoisruteSensor(object):
         result_3 = self.__do_measure(self.SENSOR_3)
         result_4 = self.__do_measure(self.SENSOR_4)
         GPIO.cleanup()
-        # TODO: implement partly success answer
+        # TODO: implement as separate sensors
         answer.update({
             'status': 'success',
             'result': {

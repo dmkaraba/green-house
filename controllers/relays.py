@@ -36,7 +36,13 @@ class RelayBase(object):
 
 
 class Lights(RelayBase):
-    RELAY = gpio_pins_conf['relay_1']
+    RELAY = gpio_pins_conf['relay_lights']
+    GPIO.setmode(GPIO.BCM)
+    GPIO.setup(RELAY, GPIO.OUT, initial=GPIO.HIGH)
+
+
+class Fan(RelayBase):
+    RELAY = gpio_pins_conf['relay_fans']
     GPIO.setmode(GPIO.BCM)
     GPIO.setup(RELAY, GPIO.OUT, initial=GPIO.HIGH)
 
@@ -45,5 +51,18 @@ class Pump(RelayBase):
     pass
 
 
-class Fan(RelayBase):
-    pass
+if __name__=='__main__':
+    Fan.on()
+    Lights.on()
+    time.sleep(2)
+
+    Fan.off()
+    Lights.off()
+    time.sleep(2)
+
+    Fan.on()
+    Lights.on()
+    time.sleep(2)
+
+    Fan.tear_down()
+    Lights.tear_down()
