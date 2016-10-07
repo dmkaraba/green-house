@@ -1,3 +1,4 @@
+#!/usr/bin/python
 import Adafruit_DHT as dht
 import utils.logger as logger
 from config import gpio_pins_conf

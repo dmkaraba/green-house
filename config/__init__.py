@@ -1,3 +1,4 @@
+#!/usr/bin/python
 # GPIO.BCM mode
 
 gpio_pins_conf={

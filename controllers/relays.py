@@ -1,3 +1,4 @@
+#!/usr/bin/python
 import time
 import RPi.GPIO as GPIO
 from config import gpio_pins_conf
