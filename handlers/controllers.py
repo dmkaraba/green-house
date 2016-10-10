@@ -32,17 +32,14 @@ class RelayBase(object):
 
     @classmethod
     def set_up(cls):
-        RELAYS = [gpio_pins_conf['relay_lights'],
-                  gpio_pins_conf['relay_fans'],
-                  gpio_pins_conf['relay_pump_1'],
-                  gpio_pins_conf['relay_pump_2']]
         GPIO.setmode(GPIO.BCM)
-        GPIO.setup(RELAYS, GPIO.OUT, initial=GPIO.HIGH)
+        GPIO.setup(cls.RELAY, GPIO.OUT, initial=GPIO.HIGH)
+        return {'status': 'success', 'info': 'GPIO {} set up'.format(cls.RELAY)}
 
     @classmethod
     def tear_down(cls):
         GPIO.cleanup()
-        return {'status': 'success', 'info': 'GPIO cleaned up'}
+        return {'status': 'success', 'info': 'GPIO {} cleaned up'.format(cls.RELAY)}
 
 
 class Lights(RelayBase):
@@ -54,6 +51,8 @@ class Fan(RelayBase):
 
 
 class Pump(RelayBase):
+    RELAYS = [gpio_pins_conf['relay_pump_1'],
+              gpio_pins_conf['relay_pump_2']]
     pass
 
 

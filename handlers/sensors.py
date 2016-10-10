@@ -18,7 +18,7 @@ class BaseSensor(object):
         raise NotImplementedError
 
     @classmethod
-    def do_measure(cls):
+    def read(cls):
         pass
 
 
@@ -50,7 +50,7 @@ class BH1750(BaseSensor):
     # bus = smbus.SMBus(0) # Rev 1 Pi uses 0
     bus = smbus.SMBus(1)  # Rev 2 Pi uses 1
 
-    def do_measure(self):
+    def read(self):
         answer = dict()
         try:
             self.readLight()  # warming up
@@ -75,11 +75,10 @@ class DHT22(BaseSensor):
 
     DHT22_PIN = gpio_pins_conf['DHT22']
 
-    @classmethod
-    def do_measure(cls):
+    def read(self):
         answer = dict()
         try:
-            h, t = dht.read_retry(dht.DHT22, cls.DHT22_PIN, delay_seconds=3)
+            h, t = dht.read_retry(dht.DHT22, self.DHT22_PIN, delay_seconds=3)
             h, t = float("%.1f" % h), float("%.1f" % t)
             logger.info('DHT22 asked. T: {}, H: {}'.format(t, h))
             answer.update({'status': 'success',
@@ -95,15 +94,15 @@ class DS18B20(BaseSensor):
     SOIL = "/sys/bus/w1/devices/{}/w1_slave".format(sensor_ids['ds18b20_a'])
     AIR = "/sys/bus/w1/devices/{}/w1_slave".format(sensor_ids['ds18b20_b'])
 
-    def __init__(self, what_to_get='not_valid'):
-        if what_to_get == 'air':
+    def __init__(self, where_to_get='not_valid'):
+        if where_to_get == 'air':
             self.sensor_file = self.AIR
-        elif what_to_get == 'soil':
+        elif where_to_get == 'soil':
             self.sensor_file = self.SOIL
         else:
             self.sensor_file = 'not_valid'
 
-    def do_measure(self):
+    def read(self):
         answer = dict()
         if self.sensor_file != 'not_valid':
             temp = self.__read_temp(self.sensor_file)
