@@ -9,7 +9,6 @@ def test_sensors():
     print 'Soil temp: ' + str(DS18B20('soil').read())
     print 'Luminosity: ' + str(BH1750().read())
 
-
 def test_relay_performers():
 
     performers = [Lights, Fan]  #, Pump]
@@ -33,8 +32,7 @@ def test_servo():
     sleep(1)
 
 
-
 if __name__ == '__main__':
-    # test_relay_performers()
-    # test_servo()
+    test_relay_performers()
+    test_servo()
     test_sensors()
