@@ -121,7 +121,6 @@ class DS18B20(BaseSensor):
     def __read_temp(self, sensor_file):
         lines = self.__read_temp_raw(sensor_file)
         while lines[0].strip()[-3:] != 'YES':
-            print 1
             time.sleep(0.2)
             lines = self.__read_temp_raw(sensor_file)
         equals_pos = lines[1].find('t=')
