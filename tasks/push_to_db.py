@@ -33,7 +33,12 @@ def push_to_db():
     connection.close()
 
 if __name__ == '__main__':
-    while True:
-        results = measure_all()
-        push_to_db()
-        time.sleep(600)
+    # while True:
+    #     try:
+    #         results = measure_all()
+    #         push_to_db()
+    #         time.sleep(30)
+    #     except:
+    #         pass
+    results = measure_all()
+    push_to_db()

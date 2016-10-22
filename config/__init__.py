@@ -18,3 +18,22 @@ sensor_ids={
     'ds18b20_a': '28-0000076aa408',
     'ds18b20_b': '28-0000076bb328'
 }
+
+mqtt_topics_sub={
+    'lights': 'lights/',
+    'fans': 'fans/',
+    'pumps': 'pumps/',
+    'servo': 'window/'
+}
+
+mqtt_topics_pub={
+    'lights': 'lights/status',
+    'fans': 'fans/status',
+    'pumps': 'pumps/status',
+    'servo': 'window/status',
+}
+cloud_mqtt_cred={
+    'user': 'bwyhxlso',
+    'pass': 'Wna3huueUhrJ',
+    'server': 'm21.cloudmqtt.com'
+}

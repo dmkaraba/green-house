@@ -51,9 +51,10 @@ class Fan(RelayBase):
 
 
 class Pump(RelayBase):
-    RELAYS = [gpio_pins_conf['relay_pump_1'],
-              gpio_pins_conf['relay_pump_2']]
-    pass
+    RELAY = [
+        gpio_pins_conf['relay_pump_1'],
+        # gpio_pins_conf['relay_pump_2']
+    ]
 
 
 class Servo(object):
