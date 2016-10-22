@@ -37,3 +37,11 @@ cloud_mqtt_cred={
     'pass': 'Wna3huueUhrJ',
     'server': 'm21.cloudmqtt.com'
 }
+
+mongodb_conf={
+    'host': 0,
+    'port': 0,
+    'db_name': 'greenhouse',
+    'conditions_coll': 'conditions',
+    'plants_coll': 'plants'
+}
