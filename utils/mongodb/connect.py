@@ -1,9 +1,5 @@
-import datetime
 from config import mongodb_conf
 from pymongo import MongoClient
-from utils.sensors.reader import read_all
-
-
 
 
 def insert_one(data):

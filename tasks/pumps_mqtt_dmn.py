@@ -18,5 +18,3 @@ class PumpsMQTTDmn(object):
 app = PumpsMQTTDmn()
 daemon_runner = runner.DaemonRunner(app)
 daemon_runner.do_action()
-
-

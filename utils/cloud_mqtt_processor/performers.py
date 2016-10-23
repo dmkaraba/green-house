@@ -8,7 +8,7 @@ class LightsMQTTClass(GHMQTTClass):
 
     topic_pub = mqtt_topics_pub['lights']
 
-    def perform(self, mqttc, obj, msg):
+    def on_message(self, mqttc, obj, msg):
         if msg.payload == 'on':
             Lights.set_up()
             Lights.on()
@@ -25,7 +25,7 @@ class FansMQTTClass(GHMQTTClass):
 
     topic_pub = mqtt_topics_pub['fans']
 
-    def perform(self, mqttc, obj, msg):
+    def on_message(self, mqttc, obj, msg):
         if msg.payload == 'on':
             self.publish(self.topic_pub, json.dumps({'status': 'ok'}))
         elif msg.payload == 'off':
@@ -38,7 +38,7 @@ class PumpsMQTTClass(GHMQTTClass):
 
     topic_pub = mqtt_topics_pub['pumps']
 
-    def perform(self, mqttc, obj, msg):
+    def on_message(self, mqttc, obj, msg):
         if msg.payload == 'on':
             self.publish(self.topic_pub, json.dumps({'status': 'ok'}))
         elif msg.payload == 'off':

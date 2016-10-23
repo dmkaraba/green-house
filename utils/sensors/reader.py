@@ -1,6 +1,5 @@
 #!/usr/bin/python
 from handlers.sensors import DS18B20, BH1750, DHT22
-import datetime
 
 
 def read_all():
