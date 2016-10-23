@@ -1,8 +1,7 @@
 #!/usr/bin/python
-import paho.mqtt.client as mqtt
 import json
-import time
 import signal
+import paho.mqtt.client as mqtt
 from config import cloud_mqtt_cred
 
 

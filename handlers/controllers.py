@@ -42,7 +42,7 @@ class RelayBase(object):
         return {'status': 'success', 'info': 'GPIO {} cleaned up'.format(cls.RELAY)}
 
 
-class Lights(RelayBase):
+class Light(RelayBase):
     RELAY = gpio_pins_conf['relay_lights']
 
 

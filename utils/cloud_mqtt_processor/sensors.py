@@ -1,22 +1,20 @@
-from handlers.sensors import DS18B20, BH1750, DHT22
-from connector import GHMQTTClass
-
+#!/usr/bin/python
+from utils.sensors.reader import read_all
+from utils.cloud_mqtt_processor import GHMQTTClass
+# TODO: delete this file
 
 def pub_all():
 
-    def measure_all():
-        soil_temp = DS18B20('soil').read()
-        air_outside_temp = DS18B20('air').read()
-        luminosity = BH1750().read()
-        air_inside = DHT22().read()
-        return soil_temp, air_outside_temp, luminosity, air_inside
+    results = read_all()
+    data = results['result']
 
-    results = measure_all()
-
-    msgs = [('greenhouse/soil/temperature', results[0]),
-            ('greenhouse/air/outside/temperature', results[1]),
-            ('greenhouse/luminosity', results[2]),
-            ('greenhouse/air/inside/temperature', results[3])]
+    msgs = [
+            ('conditions/luminosity', data['luminosity']),
+            ('conditions/soil/temperature', data['soil_temperature']),
+            ('conditions/air/outside/temperature', data['air_out_temperature']),
+            ('conditions/air/inside/temperature', data['air_inside']['temperature']),
+            ('conditions/air/inside/humidity', data['air_inside']['humidity'])
+    ]
 
     GHMQTTClass().pub(msgs)
 
