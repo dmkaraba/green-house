@@ -18,7 +18,7 @@ class GHMQTTClass(mqtt.Client):
         signal.signal(signal.SIGINT, self.cleanup)
 
     def cleanup(self, signum, frame):
-        print signum, frame
+        # print signum, frame
         self.disconnect()
 
     def on_connect(self, mqttc, obj, flags, rc):
@@ -28,7 +28,7 @@ class GHMQTTClass(mqtt.Client):
         print("Dissconnected rc: " + str(rc))
 
     def on_message(self, mqttc, obj, msg):
-        print("Message"+msg.topic+" "+str(msg.qos)+" "+str(msg.payload))
+        print("Message "+msg.topic+" "+str(msg.qos)+" "+str(msg.payload))
 
     def on_publish(self, mqttc, obj, mid):
         print("Published mid: "+str(mid))
@@ -49,24 +49,19 @@ class GHMQTTClass(mqtt.Client):
             self.publish(topic, json.dumps(payload))
 
     def sub(self, topic):
-        # self.on_message = self.on_message
         self.username_pw_set(self.USERNAME, self.PASSWORD)
         self.connect(self.SERVER, 10990, 60)
         self.subscribe(topic, 0)
-        # self.loop_forever()
 
-        # self.loop_start()
         rc = 0
         while rc == 0:
             rc = self.loop()
+        # v1
+        # self.loop_forever()
+
+        # v2
+        # self.loop_start()
         # self.loop_stop()
         # self.disconnect()
 
-        # rc = 0
-        # while rc == 0:
-        #     rc = self.loop()
-        # return rc
-
-# def cleanup():
-
-# Use the signal module to handle signals
+        return rc
