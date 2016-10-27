@@ -1,11 +1,11 @@
 #!/usr/bin/python
 from handlers.controllers import Light, Fan, Pump
-from utils.cloud_mqtt_processor import GHMQTTClass
+from utils.cloud_mqtt_processor import Base_GHMQTT
 from config import mqtt_topics_pub
 import json
 
 
-class LightMQTTClass(GHMQTTClass):
+class LightMQTTClass(Base_GHMQTT):
 
     topic_pub = mqtt_topics_pub['lights']
 
@@ -22,7 +22,7 @@ class LightMQTTClass(GHMQTTClass):
             self.publish(self.topic_pub, json.dumps({'status': 'error'}))
 
 
-class FansMQTTClass(GHMQTTClass):
+class FansMQTTClass(Base_GHMQTT):
 
     topic_pub = mqtt_topics_pub['fans']
 
@@ -35,7 +35,7 @@ class FansMQTTClass(GHMQTTClass):
             self.publish(self.topic_pub, json.dumps({'status': 'error'}))
 
 
-class PumpsMQTTClass(GHMQTTClass):
+class PumpsMQTTClass(Base_GHMQTT):
 
     topic_pub = mqtt_topics_pub['pumps']
 

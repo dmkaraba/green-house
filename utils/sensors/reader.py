@@ -24,5 +24,5 @@ def read_all():
     return {'status': 'fail', 'msg': 'Fail to read'}
 
 
-if __name__=='__main__':
-    read_all()
+# if __name__=='__main__':
+#     read_all()
