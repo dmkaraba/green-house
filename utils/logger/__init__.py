@@ -21,3 +21,10 @@ def warning(msg):
                         format="%(asctime)s %(levelname)s: %(message)s",
                         datefmt='%d-%m-%Y %I:%M:%S')
     logging.warning(msg)
+
+
+def error(msg):
+    logging.basicConfig(filename='logs/error.log', level=logging.DEBUG,
+                        format="%(asctime)s %(levelname)s: %(message)s",
+                        datefmt='%d-%m-%Y %I:%M:%S')
+    logging.error(msg)

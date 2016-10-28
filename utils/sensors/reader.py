@@ -1,28 +1,45 @@
 #!/usr/bin/python
+
 from handlers.sensors import DS18B20, BH1750, DHT22
 
 
-def read_all():
+def pull_data():
     attempts = 3
     while attempts:
         try:
-            soil_temp = DS18B20('soil').read()
-            air_outside_temp = DS18B20('air').read()
-            luminosity = BH1750().read()
-            air_inside = DHT22().read()
-            data = {
-                'soil_temperature': soil_temp['result'],
-                'air_out_temperature': air_outside_temp['result'],
-                'luminosity': luminosity['result'],
-                'air_inside': {'temperature': air_inside['result']['temperature'],
-                               'humidity': air_inside['result']['humidity']}
-            }
-            result = {'status': 'success', 'result': data}
-            return result
+            DS18B20_soil_result = DS18B20('soil').read()
+            DS18B20_air_result = DS18B20('air').read()
+            BH1750_result = BH1750().read()
+            DHT22_result = DHT22().read()
+            return (DS18B20_soil_result,
+                    DS18B20_air_result,
+                    BH1750_result,
+                    DHT22_result)
         except:
             attempts = attempts - 1
-    return {'status': 'fail', 'msg': 'Fail to read'}
+    return None
 
 
-# if __name__=='__main__':
-#     read_all()
+def read_all():
+    raw_data = pull_data()
+    if raw_data:
+        soil_temperature = raw_data[0].get('result', None)
+        air_out_temperature = raw_data[1].get('result', None)
+        luminosity = raw_data[2].get('result', None)
+        air_temperature_inside = raw_data[3].get('result', dict()).get('temperature', None)
+        air_humudity_inside = raw_data[3].get('result', dict()).get('humidity', None)
+        data = {
+            'soil_temperature': soil_temperature,
+            'air_out_temperature': air_out_temperature,
+            'luminosity': luminosity,
+            'air_inside': {'temperature': air_temperature_inside,
+                           'humidity': air_humudity_inside}
+        }
+        result = {'status': 'success', 'result': data}
+        return result
+    else:
+        return None
+
+
+if __name__=='__main__':
+    print read_all()

@@ -56,7 +56,7 @@ class BH1750(BaseSensor):
             self.readLight()  # warming up
             time.sleep(0.5)
             luminosity = self.readLight()
-            answer.update({'status': 'success', 'result': luminosity})
+            answer.update({'status': 'success', 'result': float("%.1f" % luminosity)})
         except:
             answer.update({'status': 'fail'})
         return answer
@@ -127,7 +127,8 @@ class DS18B20(BaseSensor):
         if equals_pos != -1:
             temp_string = lines[1].strip()[equals_pos+2:]
             temp = float(temp_string) / 1000
-            return temp
+            temp_formated = float("%.1f" % temp)
+            return temp_formated
 
 
 # SOIL_MOISTURE_PINS_LIST = [gpio_pins_conf['soil_moisture_1'],
