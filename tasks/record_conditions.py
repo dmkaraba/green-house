@@ -8,7 +8,6 @@ import utils.logger as logger
 
 def inser_one_to_mongo():
     data = read_all()
-    print data
     if data['status'] == 'success':
         record = {
             'conditions': data['result'],
@@ -30,4 +29,4 @@ def inser_one_to_mongo():
 
 
 if __name__=='__main__':
-    print inser_one_to_mongo()
+    inser_one_to_mongo()
