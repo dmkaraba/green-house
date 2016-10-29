@@ -35,10 +35,9 @@ def read_all():
             'air_inside': {'temperature': air_temperature_inside,
                            'humidity': air_humudity_inside}
         }
-        result = {'status': 'success', 'result': data}
-        return result
+        return {'status': 'success', 'result': data}
     else:
-        return None
+        return {'status': 'fail', 'msg': 'fail to read data'}
 
 
 if __name__=='__main__':
