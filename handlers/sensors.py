@@ -56,8 +56,10 @@ class BH1750(BaseSensor):
             self.readLight()  # warming up
             time.sleep(0.5)
             luminosity = self.readLight()
+            logger.info('BH1750| L: {}'.format(luminosity))
             answer.update({'status': 'success', 'result': float("%.1f" % luminosity)})
         except:
+            logger.warning('BH1750 read fail')
             answer.update({'status': 'fail'})
         return answer
 
@@ -80,12 +82,12 @@ class DHT22(BaseSensor):
         try:
             h, t = dht.read_retry(dht.DHT22, self.DHT22_PIN, delay_seconds=3)
             h, t = float("%.1f" % h), float("%.1f" % t)
-            logger.info('DHT22 asked. T: {}, H: {}'.format(t, h))
+            logger.info('DHT22| T: {}, H: {}'.format(t, h))
             answer.update({"status": "success",
                            "result": {"temperature": t, "humidity": h}})
         except:
+            logger.warning('DHT22 read fail')
             answer.update({"status": "fail"})
-            logger.warning('DHT22 fail')
         return answer
 
 
@@ -106,7 +108,7 @@ class DS18B20(BaseSensor):
         answer = dict()
         if self.sensor_file != 'not_valid':
             temp = self.__read_temp(self.sensor_file)
-            logger.info('DS18B20 askes. T: {}'.format(temp))
+            logger.info('DS18B20| T: {}'.format(temp))
             answer.update({'status': 'success', 'result': temp})
         else:
             logger.warning('DS18B20 not valid file')

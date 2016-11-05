@@ -29,11 +29,18 @@ def read_all():
         air_temperature_inside = raw_data[3].get('result', dict()).get('temperature', None)
         air_humudity_inside = raw_data[3].get('result', dict()).get('humidity', None)
         data = {
-            'soil_temperature': soil_temperature,
-            'air_out_temperature': air_out_temperature,
+            'soil': {
+                'temperature': soil_temperature,
+                'humidity': None
+            },
             'luminosity': luminosity,
-            'air_inside': {'temperature': air_temperature_inside,
-                           'humidity': air_humudity_inside}
+            'air_outside': {
+                'temperature': air_out_temperature
+                },
+            'air_inside': {
+                'temperature': air_temperature_inside,
+                'humidity': air_humudity_inside
+            }
         }
         return {'status': 'success', 'result': data}
     else:

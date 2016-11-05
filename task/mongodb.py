@@ -10,18 +10,16 @@ from .celery import app
 
 @app.task
 def insert_all_conditions():
-
     data = read_all()
-    # data = {'status': 'test', 'msg': 'Testing now'}
     if data['status'] == 'success':
         record = {
             'conditions': data['result'],
             'date': datetime.datetime.now()
         }
-        # record = {'date': datetime.datetime.now()}
         try:
-            insert_one(record)
+            # insert_one(record)
             logger.info('Inserted condition data to mongoDB')
+            print record
             return {'status': 'success'}
         except:
             logger.error('Fail to insert condition data to mongoDB')
@@ -32,9 +30,3 @@ def insert_all_conditions():
         answer['status'] = 'fail'
         answer['msg'] = data['msg']
         return answer
-
-
-@app.task
-def tester():
-    return 1
-
