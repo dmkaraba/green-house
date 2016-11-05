@@ -1,3 +1,5 @@
+#!/usr/bin/python
+
 from config import mongodb_conf
 from pymongo import MongoClient
 

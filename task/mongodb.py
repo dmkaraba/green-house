@@ -1,18 +1,24 @@
 #!/usr/bin/python
 
+from __future__ import absolute_import, unicode_literals
 import datetime
 from utils.sensors.reader import read_all
 from utils.mongodb.connect import insert_one
 import utils.logger as logger
+from .celery import app
 
 
-def inser_one_to_mongo():
+@app.task
+def insert_all_conditions():
+
     data = read_all()
+    # data = {'status': 'test', 'msg': 'Testing now'}
     if data['status'] == 'success':
         record = {
             'conditions': data['result'],
             'date': datetime.datetime.now()
         }
+        # record = {'date': datetime.datetime.now()}
         try:
             insert_one(record)
             logger.info('Inserted condition data to mongoDB')
@@ -28,5 +34,7 @@ def inser_one_to_mongo():
         return answer
 
 
-if __name__=='__main__':
-    inser_one_to_mongo()
+@app.task
+def tester():
+    return 1
+
