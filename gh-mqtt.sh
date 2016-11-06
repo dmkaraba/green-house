@@ -26,7 +26,7 @@ case "$1" in
     ;;
   *)
     # Refuse to do other stuff
-    echo "Usage: ./greenhouse.sh {start|stop|restart}"
+    echo "Usage: ./gh-mqtt.sh {start|stop|restart}"
     exit 1
     ;;
 esac

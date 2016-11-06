@@ -33,13 +33,13 @@ def read_all():
                 'temperature': soil_temperature,
                 'humidity': None
             },
-            'luminosity': luminosity,
             'air_outside': {
                 'temperature': air_out_temperature
                 },
             'air_inside': {
                 'temperature': air_temperature_inside,
-                'humidity': air_humudity_inside
+                'humidity': air_humudity_inside,
+                'luminosity': luminosity
             }
         }
         return {'status': 'success', 'result': data}

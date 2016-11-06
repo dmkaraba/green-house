@@ -17,9 +17,8 @@ def insert_all_conditions():
             'date': datetime.datetime.now()
         }
         try:
-            # insert_one(record)
+            insert_one(record)
             logger.info('Inserted condition data to mongoDB')
-            print record
             return {'status': 'success'}
         except:
             logger.error('Fail to insert condition data to mongoDB')
