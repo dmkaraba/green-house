@@ -1,5 +1,6 @@
+#!/usr/bin/python
 from handlers.sensors import DS18B20, BH1750, DHT22
-from handlers.controllers import Lights, Fan, Pump, Servo
+from handlers.controllers import Light, Fan, Pump, Servo
 from time import sleep
 
 
@@ -11,7 +12,7 @@ def test_sensors():
 
 def test_relay_performers():
 
-    performers = [Lights, Fan]  #, Pump]
+    performers = [Light, Fan]  #, Pump]
 
     for perf in performers:
         print perf.set_up()

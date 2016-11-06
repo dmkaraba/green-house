@@ -23,7 +23,7 @@ class Base_GHMQTT(mqtt.Client):
     def cleanup(self, signum, frame):
         # print signum, frame
         self.disconnect()
-        print '>>> CLEANUP IN MQTT'
+        print '>>> Base_GHMQTT:cleanup'
 
     def on_connect(self, mqttc, obj, flags, rc):
         print("Connected rc: "+str(rc))
