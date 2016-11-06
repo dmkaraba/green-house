@@ -2,7 +2,7 @@
 from daemon.runner import DaemonRunner
 from utils.cloud_mqtt_processor.performers import FansMQTTClass
 from config import mqtt_topics_sub
-from tasks import BaseMQTTDmn
+from task import BaseMQTTDmn
 
 
 class FansMQTTDmn(BaseMQTTDmn):

@@ -3,7 +3,7 @@ import os
 import time
 import signal
 from daemon.runner import DaemonRunner
-from tasks import BaseMQTTDmn
+from task import BaseMQTTDmn
 
 
 class SensorsMQTTDmn(BaseMQTTDmn):
@@ -34,11 +34,11 @@ class SensorsMQTTDmn(BaseMQTTDmn):
             if results:
                 data = results['result']
                 msgs = [
-                    ('conditions/luminosity', data['luminosity']),
-                    ('conditions/soil/temperature', data['soil_temperature']),
-                    ('conditions/air/outside/temperature', data['air_out_temperature']),
+                    ('conditions/soil/temperature', data['soil']['temperature']),
+                    ('conditions/air/outside/temperature', data['air_outside']['temperature']),
                     ('conditions/air/inside/temperature', data['air_inside']['temperature']),
-                    ('conditions/air/inside/humidity', data['air_inside']['humidity'])
+                    ('conditions/air/inside/humidity', data['air_inside']['humidity']),
+                    ('conditions/air/inside/luminosity', data['air_inside']['luminosity']),
                 ]
                 self.mqtt_connection.pub(msgs)
             # print 'Steel in while loop'
