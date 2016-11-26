@@ -1,5 +1,5 @@
 #!/usr/bin/python
-from handlers.sensors import DS18B20, BH1750, DHT22
+from handlers.sensors import DS18B20, BH1750, DHT22, SoilMoistureSensors
 from handlers.controllers import Light, Fan, Pump, Servo
 from time import sleep
 
@@ -8,6 +8,7 @@ def test_sensors():
     print 'Air temp outside: ' + str(DS18B20('air').read())
     print 'Air inside: ' + str(DHT22().read())
     print 'Soil temp: ' + str(DS18B20('soil').read())
+    print 'Soil moisture: ' + str(SoilMoistureSensors().read())
     print 'Luminosity: ' + str(BH1750().read())
 
 def test_relay_performers():

@@ -35,6 +35,7 @@ class SensorsMQTTDmn(BaseMQTTDmn):
                 data = results['result']
                 msgs = [
                     ('conditions/soil/temperature', data['soil']['temperature']),
+                    ('conditions/soil/moisture', data['soil']['moisture']),
                     ('conditions/air/outside/temperature', data['air_outside']['temperature']),
                     ('conditions/air/inside/temperature', data['air_inside']['temperature']),
                     ('conditions/air/inside/humidity', data['air_inside']['humidity']),

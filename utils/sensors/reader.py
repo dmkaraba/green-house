@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-from handlers.sensors import DS18B20, BH1750, DHT22
+from handlers.sensors import DS18B20, BH1750, DHT22, SoilMoistureSensors
 
 
 def pull_data():
@@ -11,10 +11,12 @@ def pull_data():
             DS18B20_air_result = DS18B20('air').read()
             BH1750_result = BH1750().read()
             DHT22_result = DHT22().read()
+            SoilMoisture_result = SoilMoistureSensors().read()
             return (DS18B20_soil_result,
                     DS18B20_air_result,
                     BH1750_result,
-                    DHT22_result)
+                    DHT22_result,
+                    SoilMoisture_result)
         except:
             attempts = attempts - 1
     return None
@@ -28,10 +30,11 @@ def read_all():
         luminosity = raw_data[2].get('result', None)
         air_temperature_inside = raw_data[3].get('result', dict()).get('temperature', None)
         air_humudity_inside = raw_data[3].get('result', dict()).get('humidity', None)
+        soil_moisture = raw_data[4].get('result', None)
         data = {
             'soil': {
                 'temperature': soil_temperature,
-                'humidity': None
+                'moisture': soil_moisture
             },
             'air_outside': {
                 'temperature': air_out_temperature

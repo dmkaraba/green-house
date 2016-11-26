@@ -3,6 +3,7 @@ import smbus
 import time
 import RPi.GPIO as GPIO
 import Adafruit_DHT as dht
+import Adafruit_ADS1x15
 import utils.logger as logger
 from config import gpio_pins_conf, sensor_ids
 
@@ -11,7 +12,7 @@ class BaseSensor(object):
 
     @classmethod
     def set_up(cls):
-        pass
+        raise NotImplementedError
 
     @classmethod
     def tear_down(cls):
@@ -133,60 +134,54 @@ class DS18B20(BaseSensor):
             return temp_formated
 
 
-# SOIL_MOISTURE_PINS_LIST = [gpio_pins_conf['soil_moisture_1'],
-#                            gpio_pins_conf['soil_moisture_2'],
-#                            gpio_pins_conf['soil_moisture_3'],
-#                            gpio_pins_conf['soil_moisture_4']]
-#
-#
-# class SoilMoisruteSensor(object):
-#
-#     def __init__(self):
-#         self.SENSOR_1 = SOIL_MOISTURE_PINS_LIST[0]
-#         self.SENSOR_2 = SOIL_MOISTURE_PINS_LIST[1]
-#         self.SENSOR_3 = SOIL_MOISTURE_PINS_LIST[2]
-#         self.SENSOR_4 = SOIL_MOISTURE_PINS_LIST[3]
-#         GPIO.setmode(GPIO.BCM)
-#         GPIO.setup(SOIL_MOISTURE_PINS_LIST, GPIO.IN)
-#
-#
-#     def __do_measure(self, sensor):
-#         try:
-#             raw_value = GPIO.input(sensor)
-#             result = self.__recalculate(raw_value)
-#             logger.info('Soil moisture sensor pin: {0}. '
-#                         'Result: {1}'.format(sensor, result))
-#             return result
-#         except:
-#             logger.warning('Soil moisture sensor pin: {} FAIL')
-#             return -1
-#
-#     def get_states(self):
-#         answer = dict()
-#         result_1 = self.__do_measure(self.SENSOR_1)
-#         result_2 = self.__do_measure(self.SENSOR_2)
-#         result_3 = self.__do_measure(self.SENSOR_3)
-#         result_4 = self.__do_measure(self.SENSOR_4)
-#         GPIO.cleanup()
-#         # TODO: implement as separate sensors
-#         answer.update({
-#             'status': 'success',
-#             'result': {
-#                 'sensor_1': result_1,
-#                 'sensor_2': result_2,
-#                 'sensor_3': result_3,
-#                 'sensor_4': result_4
-#             }
-#         })
-#         return answer
-#
-#     def __recalculate(self, val):
-#         """
-#         DAC will be implemented here
-#         :param val:
-#         :return:
-#         """
-#         if val:
-#             return 0
-#         else:
-#             return 1
+class SoilMoistureSensors(BaseSensor):
+
+    GAIN = 1
+
+    MIN_VOLTS = 0
+    MAX_VOLTS = 25600
+
+    adc = Adafruit_ADS1x15.ADS1115()
+
+    def read_one_sensor(self, sens_num):
+        """Read raw data from specific sensor [0...3]"""
+        return self.adc.read_adc(sens_num, gain=self.GAIN)
+
+    def read_all_sensors(self):
+        """Read data from all sensors"""
+        values = [0]*4
+        for i in range(4):
+            values[i] = self.adc.read_adc(i, gain=self.GAIN)
+        return values
+
+    def do_average(self, values):
+        return sum(values)/len(values)
+
+    def read(self):
+        raw = self.read_all_sensors()
+        percents = map(self.volts_to_percents, raw)
+        result = self.do_average(percents)
+        return {'status': 'success', 'result': result}
+
+    def volts_to_percents(self, value):
+        """
+        Converting raw volts to moisture percents.
+        """
+        old_min = self.MAX_VOLTS
+        old_max = self.MIN_VOLTS
+        new_min = 0
+        new_max = 100
+
+        # Figure out how 'wide' each range is
+        old_span = old_max - old_min
+        new_span = new_max - new_min
+
+        # Convert the left range into a 0-1 range (float)
+        value_scaled = float(value - old_min) / float(old_span)
+        value_scaled_formated = float("%.3f" % value_scaled)
+
+        return new_min + (value_scaled_formated * new_span)
+
+
+if __name__ == '__main__':
+    print SoilMoistureSensors().volts_to_percents(7700)
