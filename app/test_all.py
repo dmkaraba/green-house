@@ -9,7 +9,12 @@ def test_sensors():
     sensors = (DS18B20_Air, DS18B20_Soil, BH1750,
                DHT22, SoilMoistureSensors)
     for sensor in sensors:
-        print sensor.NAME, sensor().read()
+        name, result = sensor.NAME, sensor().read()
+        status, value = result['status'], result['result']
+        if status == 'success':
+            print 'OK | {0:<33} | {1}'.format(name, value)
+        else:
+            print 'FAIL | status: {}'.format(status)
 
 def test_relay_performers():
 

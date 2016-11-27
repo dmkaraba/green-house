@@ -1,4 +1,5 @@
 #!/usr/bin/python
+
 import time
 import RPi.GPIO as GPIO
 import utils.logger as logger
@@ -6,6 +7,27 @@ from config import gpio_pins_conf
 
 
 class RelayBase(object):
+    """
+    Controlling relay performers here.
+    Usage (lights for example):
+
+    # If we want to switch lights on
+    Light.on()
+
+    # If we want to switch lights off
+    Light.off()
+
+    # We cat reverse lights state
+    Light.switch()
+
+    # We can ask for lights state
+    Light.get_state()
+
+    # We can set up lights  GPIO  pins  before turning on.
+    # But it's not necessary. Just turning on or switching
+    # checks for GPIOs for been seted up.
+    # And if they are not yet it sets them up.
+    """
 
     RELAY = None
     SETED_UP = False
@@ -76,8 +98,14 @@ class Fan(RelayBase):
 class Pump(RelayBase):
     RELAY = [
         gpio_pins_conf['relay_pump_1'],
-        # gpio_pins_conf['relay_pump_2']
+        gpio_pins_conf['relay_pump_2']
     ]
+
+    @classmethod
+    def pulse(cls, duration=1):
+        cls.on()
+        time.sleep(duration)
+        cls.off()
 
 
 class Servo(object):

@@ -11,12 +11,10 @@ class LightMQTTClass(Base_GHMQTT):
 
     def on_message(self, mqttc, obj, msg):
         if msg.payload == 'on':
-            Light.set_up()
             Light.on()
             self.publish(self.topic_pub, json.dumps({'status': 'ok'}))
         elif msg.payload == 'off':
             Light.off()
-            Light.tear_down()
             self.publish(self.topic_pub, json.dumps({'status': 'ok'}))
         else:
             self.publish(self.topic_pub, json.dumps({'status': 'error'}))
@@ -28,8 +26,10 @@ class FansMQTTClass(Base_GHMQTT):
 
     def on_message(self, mqttc, obj, msg):
         if msg.payload == 'on':
+            Fan.on()
             self.publish(self.topic_pub, json.dumps({'status': 'ok'}))
         elif msg.payload == 'off':
+            Fan.off()
             self.publish(self.topic_pub, json.dumps({'status': 'ok'}))
         else:
             self.publish(self.topic_pub, json.dumps({'status': 'error'}))
@@ -41,8 +41,10 @@ class PumpsMQTTClass(Base_GHMQTT):
 
     def on_message(self, mqttc, obj, msg):
         if msg.payload == 'on':
+            Pump.pulse()
             self.publish(self.topic_pub, json.dumps({'status': 'ok'}))
         elif msg.payload == 'off':
+            Pump.off()
             self.publish(self.topic_pub, json.dumps({'status': 'ok'}))
         else:
             self.publish(self.topic_pub, json.dumps({'status': 'error'}))

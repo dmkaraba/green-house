@@ -20,16 +20,16 @@ sensor_ids={
 }
 
 mqtt_topics_sub={
-    'lights': 'lights/',
-    'fans': 'fans/',
-    'pumps': 'pumps/',
+    'lights': 'light/',
+    'fans': 'fan/',
+    'pumps': 'pump/',
     'servo': 'window/'
 }
 
 mqtt_topics_pub={
-    'lights': 'lights/status',
-    'fans': 'fans/status',
-    'pumps': 'pumps/status',
+    'lights': 'light/status',
+    'fans': 'fan/status',
+    'pumps': 'pump/status',
     'servo': 'window/status',
 }
 cloud_mqtt_cred={
