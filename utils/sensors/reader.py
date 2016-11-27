@@ -1,14 +1,15 @@
 #!/usr/bin/python
 
-from handlers.sensors import DS18B20, BH1750, DHT22, SoilMoistureSensors
+from handlers.sensors import DS18B20_Air, DS18B20_Soil
+from handlers.sensors import BH1750, DHT22, SoilMoistureSensors
 
 
 def pull_data():
     attempts = 3
     while attempts:
         try:
-            DS18B20_soil_result = DS18B20('soil').read()
-            DS18B20_air_result = DS18B20('air').read()
+            DS18B20_soil_result = DS18B20_Air().read()
+            DS18B20_air_result = DS18B20_Soil().read()
             BH1750_result = BH1750().read()
             DHT22_result = DHT22().read()
             SoilMoisture_result = SoilMoistureSensors().read()

@@ -10,6 +10,8 @@ from config import gpio_pins_conf, sensor_ids
 
 class BaseSensor(object):
 
+    NAME = None
+
     @classmethod
     def set_up(cls):
         raise NotImplementedError
@@ -24,6 +26,8 @@ class BaseSensor(object):
 
 
 class BH1750(BaseSensor):
+
+    NAME = 'Air inside luminosity'
 
     # Define some constants from the datasheet
     DEVICE = 0x23  # Default device I2C address
@@ -76,6 +80,7 @@ class BH1750(BaseSensor):
 
 class DHT22(BaseSensor):
 
+    NAME = 'Air inside humidity/temperature'
     DHT22_PIN = gpio_pins_conf['DHT22']
 
     def read(self):
@@ -94,26 +99,18 @@ class DHT22(BaseSensor):
 
 class DS18B20(BaseSensor):
 
-    SOIL = "/sys/bus/w1/devices/{}/w1_slave".format(sensor_ids['ds18b20_a'])
-    AIR = "/sys/bus/w1/devices/{}/w1_slave".format(sensor_ids['ds18b20_b'])
-
-    def __init__(self, where_to_get='not_valid'):
-        if where_to_get == 'air':
-            self.sensor_file = self.AIR
-        elif where_to_get == 'soil':
-            self.sensor_file = self.SOIL
-        else:
-            self.sensor_file = 'not_valid'
+    NAME = None
+    SENSOR_FILE = None
 
     def read(self):
         answer = dict()
-        if self.sensor_file != 'not_valid':
-            temp = self.__read_temp(self.sensor_file)
+        try:
+            temp = self.__read_temp(self.SENSOR_FILE)
             logger.info('DS18B20| T: {}'.format(temp))
             answer.update({'status': 'success', 'result': temp})
-        else:
-            logger.warning('DS18B20 not valid file')
-            answer.update({'status': 'fail', 'details': 'Not valid file address'})
+        except:
+            logger.warning('DS18B20 read fail')
+            answer.update({"status": "fail"})
         return answer
 
     def __read_temp_raw(self, sensor_file):
@@ -134,7 +131,19 @@ class DS18B20(BaseSensor):
             return temp_formated
 
 
+class DS18B20_Air(DS18B20):
+    NAME = 'Air outside temperature'
+    SENSOR_FILE = "/sys/bus/w1/devices/{}/w1_slave".format(sensor_ids['ds18b20_b'])
+
+
+class DS18B20_Soil(DS18B20):
+    NAME = 'Soil inside temperature'
+    SENSOR_FILE = "/sys/bus/w1/devices/{}/w1_slave".format(sensor_ids['ds18b20_a'])
+
+
 class SoilMoistureSensors(BaseSensor):
+
+    NAME = 'Soil moisture'
 
     GAIN = 1
 
@@ -157,12 +166,6 @@ class SoilMoistureSensors(BaseSensor):
     def do_average(self, values):
         return sum(values)/len(values)
 
-    def read(self):
-        raw = self.read_all_sensors()
-        percents = map(self.volts_to_percents, raw)
-        result = self.do_average(percents)
-        return {'status': 'success', 'result': result}
-
     def volts_to_percents(self, value):
         """
         Converting raw volts to moisture percents.
@@ -182,6 +185,8 @@ class SoilMoistureSensors(BaseSensor):
 
         return new_min + (value_scaled_formated * new_span)
 
-
-if __name__ == '__main__':
-    print SoilMoistureSensors().volts_to_percents(7700)
+    def read(self):
+        raw = self.read_all_sensors()
+        percents = map(self.volts_to_percents, raw)
+        result = self.do_average(percents)
+        return {'status': 'success', 'result': result}
