@@ -4,10 +4,10 @@ from config import mongodb_conf
 from pymongo import MongoClient
 
 
-def insert_one(data):
+def insert_one(data, coll=mongodb_conf['conditions_coll']):
 
     DB_NANE = mongodb_conf['db_name']
-    CONDITIONS_COLLECTION = mongodb_conf['conditions_coll']
+    CONDITIONS_COLLECTION = coll
 
     connection = MongoClient('localhost', 27017)
     db = connection[DB_NANE]

@@ -1,0 +1,17 @@
+celeryd:
+  CELERY_IMPORTS: ["handlers.tasks"]
+  BROKER_URL: "amqp://guest@localhost//"
+
+celerybeat:
+  CELERY_TIMEZONE: 'Europe/Minsk'
+  CELERYBEAT_SCHEDULE:
+    conditions_to_db:
+      task: 'handlers.tasks.insert_all_conditions'
+      schedule:
+        timedelta:
+          seconds: 30
+    soil_to_db:
+      task: 'handlers.tasks.soil_moisture_test'
+      schedule:
+        timedelta:
+          seconds: 40

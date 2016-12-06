@@ -9,24 +9,22 @@ def test_sensors():
     sensors = (DS18B20_Air, DS18B20_Soil, BH1750,
                DHT22, SoilMoistureSensors)
     for sensor in sensors:
-        name, result = sensor.NAME, sensor().read()
-        status, value = result['status'], result['result']
-        if status == 'success':
-            print 'OK | {0:<33} | {1}'.format(name, value)
+        name, answer = sensor.NAME, sensor().read()
+        if answer['status'] == 'success':
+            value = answer['result']
+            print 'OK   | {0:<33} | {1}'.format(name, value)
         else:
-            print 'FAIL | status: {}'.format(status)
+            print 'FAIL | {0:<33} | {1}'.format(name, answer['status'])
 
 def test_relay_performers():
 
-    performers = (Light, Fan)  #, Pump)
+    performers = (Light, Fan, Pump)
 
     for perf in performers:
-        print perf.set_up()
         print perf.on()
-        sleep(2)
+        sleep(1)
         print perf.off()
-        print perf.tear_down()
-        sleep(0.5)
+        sleep(1)
 
 def test_servo():
     print Servo.set_state(0)

@@ -152,11 +152,11 @@ class SoilMoistureSensors(BaseSensor):
 
     adc = Adafruit_ADS1x15.ADS1115()
 
-    def read_one_sensor(self, sens_num):
+    def read_one_raw(self, sens_num):
         """Read raw data from specific sensor [0...3]"""
         return self.adc.read_adc(sens_num, gain=self.GAIN)
 
-    def read_all_sensors(self):
+    def read_all_raw(self):
         """Read data from all sensors"""
         values = [0]*4
         for i in range(4):
@@ -186,7 +186,12 @@ class SoilMoistureSensors(BaseSensor):
         return new_min + (value_scaled_formated * new_span)
 
     def read(self):
-        raw = self.read_all_sensors()
+        raw = self.read_all_raw()
         percents = map(self.volts_to_percents, raw)
         result = self.do_average(percents)
+        return {'status': 'success', 'result': result}
+
+    def read_one(self, num):
+        raw = self.read_one_raw(num)
+        result = map(self.volts_to_percents, [raw])[0]
         return {'status': 'success', 'result': result}

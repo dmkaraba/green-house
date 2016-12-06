@@ -41,7 +41,7 @@ class PumpsMQTTClass(Base_GHMQTT):
 
     def on_message(self, mqttc, obj, msg):
         if msg.payload == 'on':
-            Pump.pulse()
+            Pump.pulse(5)
             self.publish(self.topic_pub, json.dumps({'status': 'ok'}))
         elif msg.payload == 'off':
             Pump.off()
