@@ -1,11 +1,12 @@
 #!/usr/bin/python
-import smbus
 import time
-import RPi.GPIO as GPIO
-import Adafruit_DHT as dht
+
 import Adafruit_ADS1x15
+import Adafruit_DHT as dht
+import smbus
+
 import utils.logger as logger
-from config import gpio_pins_conf, sensor_ids
+# from config import config
 
 
 class BaseSensor(object):
@@ -81,7 +82,7 @@ class BH1750(BaseSensor):
 class DHT22(BaseSensor):
 
     NAME = 'Air inside humidity/temperature'
-    DHT22_PIN = gpio_pins_conf['DHT22']
+    DHT22_PIN = config.sensors['gpio_pins']['DHT22']
 
     def read(self):
         answer = dict()
@@ -133,12 +134,12 @@ class DS18B20(BaseSensor):
 
 class DS18B20_Air(DS18B20):
     NAME = 'Air outside temperature'
-    SENSOR_FILE = "/sys/bus/w1/devices/{}/w1_slave".format(sensor_ids['ds18b20_b'])
+    SENSOR_FILE = "/sys/bus/w1/devices/{}/w1_slave".format(config.sensors['ids']['ds18b20_b'])
 
 
 class DS18B20_Soil(DS18B20):
     NAME = 'Soil inside temperature'
-    SENSOR_FILE = "/sys/bus/w1/devices/{}/w1_slave".format(sensor_ids['ds18b20_a'])
+    SENSOR_FILE = "/sys/bus/w1/devices/{}/w1_slave".format(config.sensors['ids']['ds18b20_a'])
 
 
 class SoilMoistureSensors(BaseSensor):

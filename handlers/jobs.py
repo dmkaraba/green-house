@@ -2,21 +2,12 @@
 # -*- coding: utf-8 -*-
 
 import datetime
+
 import utils.logger as logger
+from config.c import config
+from modules.data.connections import mongo_connection
+from modules.hardware.sensors import SoilMoistureSensors
 from utils.sensors.reader import read_all
-from utils.mongodb.connect import insert_one
-from handlers.sensors import SoilMoistureSensors
-
-
-# def shoot():
-#     # task for frames shooting gona be here
-#     print '>>> shoot <<<'
-#     return 1
-#
-#
-# def ones_job():
-#     print '>>> ones <<<'
-#     return 1
 
 
 def insert_all_conditions():
@@ -28,7 +19,9 @@ def insert_all_conditions():
             'date': datetime.datetime.now()
         }
         try:
-            insert_one(record)
+            db = mongo_connection[config.mongodb['db_name']]
+            db['conditions'].insert_one(record)
+            # insert_one(record)
             logger.info('Inserted condition data to mongoDB')
             return {'status': 'success'}
         except:
@@ -56,7 +49,9 @@ def soil_moisture_test():
         'date': datetime.datetime.now()
     }
     try:
-        insert_one(record, 'soil_test')
+        db = mongo_connection[config.mongodb['db_name']]
+        db['conditions'].insert_one(record)
+        # insert_one(record, 'soil_test')
         logger.info('Inserted condition data to mongoDB')
         return {'status': 'success'}
     except:

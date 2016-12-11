@@ -12,3 +12,5 @@ class BaseMQTTDmn(object):
 
     def run(self):
         raise NotImplementedError
+
+# TODO: moved in modules_mqtt_interaction. Delete from here.

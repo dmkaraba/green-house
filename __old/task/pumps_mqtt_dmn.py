@@ -1,9 +1,10 @@
 #!/usr/bin/python
 
 from daemon.runner import DaemonRunner
-from utils.cloud_mqtt_processor.performers import PumpsMQTTClass
-from config import mqtt_topics_sub
 from task import BaseMQTTDmn
+from utils.cloud_mqtt_processor.performers import PumpsMQTTClass
+
+# from config import mqtt_topics_sub
 
 
 class PumpsMQTTDmn(BaseMQTTDmn):

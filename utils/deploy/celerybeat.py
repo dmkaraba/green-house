@@ -1,24 +1,25 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from datetime import timedelta
+
 from celery import Celery
 from celery.schedules import crontab
+
 from config.c import config
 
+schedules = {}
 
-# app = Celery()
-# app.conf.beat_schedule = {
-#     'all-to-db-10min': {
-#         'task': 'handlers.tasks.insert_all_conditions',
-#         'schedule': crontab(minute='*/2')
-#     },
-#     'soil-to-db': {
-#         'task': 'handlers.tasks.soil_moisture_test',
-#         'schedule': crontab(minute='*/1')
-#     }
-# }
+for k, schedule in config.celerybeat['CELERYBEAT_SCHEDULE'].items():
+    if 'timedelta' in schedule['schedule']:
+        schedule['schedule'] = timedelta(**schedule['schedule']['timedelta'])
+    elif 'crontab' in schedule['schedule']:
+        schedule['schedule'] = crontab(**schedule['schedule']['crontab'])
+    schedules.update({k: schedule})
 
-print config.celerybeat
+
+config.celerybeat['CELERYBEAT_SCHEDULE'] = schedules
+
 
 app = Celery()
 app.conf.update(config.celerybeat)

@@ -1,9 +1,11 @@
 #!/usr/bin/python
 
-import time
-import RPi.GPIO as GPIO
-import utils.logger as logger
-from config import gpio_pins_conf
+# import time
+#
+# import RPi.GPIO as GPIO
+#
+# import utils.logger as logger
+# from config import config
 
 
 class RelayBase(object):
@@ -88,17 +90,17 @@ class RelayBase(object):
 
 
 class Light(RelayBase):
-    RELAY = gpio_pins_conf['relay_lights']
+    RELAY = config.relays['gpio_pins']['lights']
 
 
 class Fan(RelayBase):
-    RELAY = gpio_pins_conf['relay_fans']
+    RELAY = config.relays['gpio_pins']['fans']
 
 
 class Pump(RelayBase):
     RELAY = [
-        gpio_pins_conf['relay_pump_1'],
-        gpio_pins_conf['relay_pump_2']
+        config.relays['gpio_pins']['pump_1'],
+        config.relays['gpio_pins']['pump_2']
     ]
 
     @classmethod
@@ -110,7 +112,7 @@ class Pump(RelayBase):
 
 class Servo(object):
 
-    SERVO_PIN = gpio_pins_conf['servo']
+    SERVO_PIN = config.relays['gpio_pins']['servo']
 
     min_position = 3.0
     max_position = 12.4

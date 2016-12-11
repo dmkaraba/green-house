@@ -1,6 +1,7 @@
 celeryd:
   CELERY_IMPORTS: ["handlers.tasks"]
   BROKER_URL: "amqp://guest@localhost//"
+  CELERY_TIMEZONE: 'Europe/Minsk'
 
 celerybeat:
   CELERY_TIMEZONE: 'Europe/Minsk'
@@ -8,10 +9,54 @@ celerybeat:
     conditions_to_db:
       task: 'handlers.tasks.insert_all_conditions'
       schedule:
-        timedelta:
-          seconds: 30
+        crontab:
+          minute: '*/10'
+      options:
+        queue: 'conditions'
     soil_to_db:
       task: 'handlers.tasks.soil_moisture_test'
       schedule:
-        timedelta:
-          seconds: 40
+        crontab:
+          minute: '*/5'
+      options:
+        queue: 'conditions'
+
+sensors:
+  gpio_pins:
+    soil_moisture_1: 5
+    soil_moisture_2: 6
+    soil_moisture_3: 13
+    soil_moisture_4: 16
+    DHT22: 18
+  ids:
+    ds18b20_a: 28-0000076aa408
+    ds18b20_b: 28-0000076bb328
+
+relays:
+  gpio_pins:
+    servo: 17
+    lights: 19
+    pump_1: 20
+    pump_2: 21
+    fans: 26
+
+mongodb:
+  port: 27017
+  db_name: 'greenhouse'
+
+mqtt_topics_sub:
+  lights: 'light/'
+  fans: 'fan/'
+  pumps: 'pump/'
+  servo: 'window/'
+
+mqtt_topics_pub:
+  'lights': 'light/status'
+  'fans': 'fan/status'
+  'pumps': 'pump/status'
+  'servo': 'window/status'
+
+cloud_mqtt_cred:
+  user: 'bwyhxlso'
+  pass: 'Wna3huueUhrJ'
+  server: 'm21.cloudmqtt.com'

@@ -1,16 +1,13 @@
-#!/usr/bin/python
-import os
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 import time
 import signal
-from daemon.runner import DaemonRunner
-from task import BaseMQTTDmn
 
 
-class SensorsMQTTDmn(BaseMQTTDmn):
+class SensorsMQTTDmn(object):
 
     def __init__(self):
-        super(SensorsMQTTDmn, self).__init__()
-        self.pidfile_path = '/tmp/sensors_mqtt_dmn.pid'
         self.kill_now = False
 
     def exit_pub_loop(self, signum, frame):
@@ -20,7 +17,7 @@ class SensorsMQTTDmn(BaseMQTTDmn):
 
     def run(self):
         from utils.sensors.reader import read_all
-        from utils.cloud_mqtt_processor import Base_GHMQTT
+        from modules.mqtt_interaction.base import Base_GHMQTT
 
         self.mqtt_connection = Base_GHMQTT()
 
@@ -44,9 +41,3 @@ class SensorsMQTTDmn(BaseMQTTDmn):
                 self.mqtt_connection.pub(msgs)
             # print 'Steel in while loop'
             time.sleep(5)
-
-
-app = SensorsMQTTDmn()
-daemon_runner = DaemonRunner(app)
-daemon_runner.daemon_context.working_directory = '/home/pi/dev/green-house'
-daemon_runner.do_action()

@@ -1,7 +1,7 @@
 #!/usr/bin/python
-from handlers.sensors import DS18B20_Air, DS18B20_Soil
-from handlers.sensors import BH1750, DHT22, SoilMoistureSensors
-from handlers.controllers import Light, Fan, Pump, Servo
+from modules.hardware.sensors import DS18B20_Air, DS18B20_Soil
+from modules.hardware.sensors import BH1750, DHT22, SoilMoistureSensors
+from modules.hardware.controllers import Light, Fan, Pump, Servo
 from time import sleep
 
 
@@ -39,5 +39,5 @@ def test_servo():
 
 if __name__ == '__main__':
     # test_relay_performers()
-    # test_servo()
+    test_servo()
     test_sensors()

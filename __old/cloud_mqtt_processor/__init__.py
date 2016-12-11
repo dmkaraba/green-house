@@ -1,8 +1,10 @@
 #!/usr/bin/python
 import json
 import signal
+
 import paho.mqtt.client as mqtt
-from config import cloud_mqtt_cred
+
+# from config import cloud_mqtt_cred
 
 
 class Base_GHMQTT(mqtt.Client):

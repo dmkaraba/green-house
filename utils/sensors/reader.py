@@ -1,7 +1,8 @@
-#!/usr/bin/python
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
-from handlers.sensors import DS18B20_Air, DS18B20_Soil
-from handlers.sensors import BH1750, DHT22, SoilMoistureSensors
+from modules.hardware.sensors import DS18B20_Air, DS18B20_Soil
+from modules.hardware.sensors import BH1750, DHT22, SoilMoistureSensors
 
 
 def pull_data():
