@@ -2,11 +2,11 @@
 # -*- coding: utf-8 -*-
 
 import datetime
-
 import utils.logger as logger
 from config import config
 from modules.data.connections import mongo_connection
 from modules.greenhouse.sensors import SoilMoistureSensors
+from modules.greenhouse.camera import Camera
 from utils.sensors.reader import read_all
 
 
@@ -55,3 +55,7 @@ def soil_moisture_test():
     except:
         logger.error('Fail to insert condition data to mongoDB')
         return {'status': 'fail', 'msg': 'Fail inserting data'}
+
+
+def shoot_frame():
+    Camera.shoot()
