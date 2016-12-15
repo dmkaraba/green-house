@@ -6,8 +6,8 @@ import signal
 
 import paho.mqtt.client as mqtt
 
-from config.c import config
-from modules.hardware.controllers import Light, Fan, Pump
+from config import config
+from modules.greenhouse.controllers import Light, Fan, Pump
 
 
 class Base_GHMQTT(mqtt.Client):

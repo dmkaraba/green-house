@@ -7,10 +7,8 @@ import Adafruit_DHT as dht
 import smbus
 
 import utils.logger as logger
-from config.c import config
+from config import config
 
-
-# TODO: use it from here. Delete handlers/sensors.py
 
 class BaseSensor(object):
 

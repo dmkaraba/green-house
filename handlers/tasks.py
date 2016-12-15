@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from config.c import config
+from config import config
 from utils.deploy.celerybeat import app as celerybeat_app
 from utils.deploy.celeryd import app as celeryd_app
 

@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import pymongo
-from config.c import config
+from config import config
 
 
 def get_mongo_connection():

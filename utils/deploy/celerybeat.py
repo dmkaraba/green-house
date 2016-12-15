@@ -6,7 +6,7 @@ from datetime import timedelta
 from celery import Celery
 from celery.schedules import crontab
 
-from config.c import config
+from config import config
 
 schedules = {}
 

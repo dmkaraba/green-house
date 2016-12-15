@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from modules.hardware.sensors import DS18B20_Air, DS18B20_Soil
-from modules.hardware.sensors import BH1750, DHT22, SoilMoistureSensors
+from modules.greenhouse.sensors import DS18B20_Air, DS18B20_Soil
+from modules.greenhouse.sensors import BH1750, DHT22, SoilMoistureSensors
 
 
 def pull_data():

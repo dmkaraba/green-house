@@ -4,10 +4,7 @@
 import time
 import RPi.GPIO as GPIO
 import utils.logger as logger
-from config.c import config
-
-
-# TODO: use it from here. Delete handlers/controllers.py
+from config import config
 
 
 class RelayBase(object):

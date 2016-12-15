@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from celery import Celery
-from config.c import config
+from config import config
 
 # app = Celery('main_app',
 #              broker='amqp://guest@localhost//',
