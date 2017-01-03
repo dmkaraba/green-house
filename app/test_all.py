@@ -18,7 +18,7 @@ def test_sensors():
 
 def test_relay_performers():
 
-    performers = (Light, Fan, Pump)
+    performers = (Light, Fan) #, Pump)
 
     for perf in performers:
         print perf.on()
@@ -38,6 +38,6 @@ def test_servo():
 
 
 if __name__ == '__main__':
-    # test_relay_performers()
+    test_relay_performers()
     # test_servo()
     test_sensors()
