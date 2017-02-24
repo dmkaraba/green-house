@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 
 from config import config
-from utils.deploy.celerybeat import app as celerybeat_app
 from utils.deploy.celeryd import app as celeryd_app
+from utils.deploy.celerybeat import app as celerybeat_app
 
 
 @celerybeat_app.task(ignore_result=True, queue='main')
@@ -40,6 +40,29 @@ def pumps():
 def sensors():
     from modules.mqtt_interaction.handlers import SensorsMQTTDmn
     SensorsMQTTDmn().run()
+
+
+@celeryd_app.task(ignore_result=True, queue='gh.incoming')
+def push_event():
+    pass
+
+@celeryd_app.task(ignore_result=True, queue='gh.outcoming')
+def push_action():
+    pass
+
+
+class BaseQueue(object):
+    pass
+
+
+class IncomingQueue(BaseQueue):
+    def push(self, obj):
+        push_event.apply_async(args=[obj])
+
+
+class OutcomingQueue(BaseQueue):
+    def push(self, obj):
+        push_action.apply_async(args=[obj])
 
 
 fans.apply_async()
