@@ -83,7 +83,7 @@ class RelayBase(object):
     @classmethod
     def tear_down(cls):
         # TODO: not to call cleanup at all. Only at system shotdown
-        GPIO.cleanup()
+        GPIO.cleanup(cls.RELAY)
         cls.SETED_UP = False
         return {'status': 'success', 'info': 'GPIOs cleaned up'}
 
@@ -107,6 +107,7 @@ class Pump(RelayBase):
         cls.on()
         time.sleep(duration)
         cls.off()
+        cls.tear_down()
 
 
 class Servo(object):

@@ -1,27 +1,25 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from modules.greenhouse.sensors import DS18B20_Air, DS18B20_Soil
-from modules.greenhouse.sensors import BH1750, DHT22, SoilMoistureSensors
+from modules.greenhouse.sensors import DS18B20_Air, DS18B20_Soil, \
+                                       BH1750, DHT22, SoilMoistureSensors
+from modules.greenhouse.sensor_answers import AllSensorsAnswer
 
 
 def pull_data():
     attempts = 3
     while attempts:
         try:
-            DS18B20_soil_result = DS18B20_Air().read()
-            DS18B20_air_result = DS18B20_Soil().read()
-            BH1750_result = BH1750().read()
-            DHT22_result = DHT22().read()
-            SoilMoisture_result = SoilMoistureSensors().read()
-            return (DS18B20_soil_result,
-                    DS18B20_air_result,
-                    BH1750_result,
-                    DHT22_result,
-                    SoilMoisture_result)
+            AllSensorsAnswer.DS18B20_air = DS18B20_Air().read()
+            AllSensorsAnswer.DS18B20_soil = DS18B20_Soil().read()
+            AllSensorsAnswer.BH1750 = BH1750().read()
+            AllSensorsAnswer.DHT22 = DHT22().read()
+            AllSensorsAnswer.SoilMoisture = SoilMoistureSensors().read()
+            return AllSensorsAnswer
         except:
             attempts = attempts - 1
-    return None
+    AllSensorsAnswer.rc = 60
+    return AllSensorsAnswer
 
 
 def read_all():
