@@ -3,34 +3,8 @@
 
 from schematics.models import Model
 from schematics.types.compound import ModelType
-from schematics.types import BaseType
 from schematics import types
 
-
-# class BaseSchema(Model):
-#
-#     type = None
-#
-#     @classmethod
-#     def event_id(cls):
-#         return cls.type or cls.__name__.lower()
-#
-#     def to_primitive(self, role=None, context=None):
-#         self.validate()
-#         data = super(BaseSchema, self).to_primitive(role=role, context=context)
-#         if data is None:
-#             data = dict()
-#         data['type'] = self.event_id()
-#         return data
-#
-#
-# class DynamicModelType(BaseType):
-#
-#     def to_native(self, value, context=None):
-#         if isinstance(value, Model):
-#             return value.to_primitive()
-#         else:
-#             return value
 
 class BaseSensorAnswer(Model):
     rc = types.IntType(default=0)
