@@ -44,7 +44,7 @@ class AirInsideConditions(EmbeddedDocument):
 
 class SensorResultsDoc(DBDocument):
 
-    meta = {'collection': 'conds'}
+    meta = {'collection': 'conditions'}
 
     soil = EmbeddedDocumentField(SoilConditions)
     air_outside = EmbeddedDocumentField(AirOutsideConditions)
