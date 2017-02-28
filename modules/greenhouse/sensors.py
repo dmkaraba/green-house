@@ -1,11 +1,9 @@
 #!/usr/bin/python
 
 import time
-
 import Adafruit_ADS1x15
 import Adafruit_DHT as dht
 import smbus
-
 import utils.logger as logger
 from config import config
 from modules.greenhouse.sensor_answers import DS18B20Result, BH1750Result, DHT22Result, SoilMoistureResult
@@ -64,12 +62,9 @@ class BH1750(BaseSensor):
             time.sleep(0.5)
             luminosity = self.readLight()
             logger.info('BH1750| L: {}'.format(luminosity))
-            BH1750Result.luminosity = float("%.1f" % luminosity)
-        except:
-            logger.warning('BH1750 read fail')
-            BH1750Result.luminosity = 0  # TODO: not set 0 here. Problem in modules.greenhouse.sensor_answers.BH1750Result
-            BH1750Result.rc = 66
-        return BH1750Result
+            return BH1750Result({'luminosity': float("%.1f" % luminosity)})
+        except IOError:
+            return BH1750Result({'rc': 66})
 
     def convertToNumber(self, data):
         # Simple function to convert 2 bytes of data
@@ -87,15 +82,11 @@ class DHT22(BaseSensor):
     DHT22_PIN = config.sensors['gpio_pins']['DHT22']
 
     def read(self):
-        try:
-            h, t = dht.read_retry(dht.DHT22, self.DHT22_PIN, delay_seconds=3)
-            logger.info('DHT22| T: {}, H: {}'.format(t, h))
-            DHT22Result.temperature = float("%.1f" % t)
-            DHT22Result.humidity = float("%.1f" % h)
-        except:
-            logger.warning('DHT22 read fail')
-            DHT22Result.rc = 66
-        return DHT22Result
+        h, t = dht.read_retry(dht.DHT22, self.DHT22_PIN, delay_seconds=3)
+        logger.info('DHT22| T: {}, H: {}'.format(t, h))
+        DHT22Result.temperature = float("%.1f" % t)
+        DHT22Result.humidity = float("%.1f" % h)
+        return DHT22Result({'temperature': float("%.1f" % t), 'humidity': float("%.1f" % h)})
 
 
 class DS18B20(BaseSensor):
@@ -104,14 +95,9 @@ class DS18B20(BaseSensor):
     SENSOR_FILE = None
 
     def read(self):
-        try:
-            temperature = self.__read_temp(self.SENSOR_FILE)
-            logger.info('DS18B20| T: {}'.format(temperature))
-            DS18B20Result.temperature = temperature
-        except:
-            logger.warning('DS18B20 read fail')
-            DS18B20Result.rc = 66
-        return DS18B20Result
+        t = self.__read_temp(self.SENSOR_FILE)
+        logger.info('DS18B20| T: {}'.format(t))
+        return DS18B20Result({'temperature': t})
 
     def __read_temp_raw(self, sensor_file):
         with open(sensor_file, 'r') as f:
@@ -188,8 +174,7 @@ class SoilMoistureSensors(BaseSensor):
     def read(self):
         raw = self.read_all_raw()
         percents = map(self.volts_to_percents, raw)
-        SoilMoistureResult.moisture = self.do_average(percents)
-        return SoilMoistureResult
+        return SoilMoistureResult({'moisture': self.do_average(percents)})
 
     def read_one(self, num):
         raw = self.read_one_raw(num)

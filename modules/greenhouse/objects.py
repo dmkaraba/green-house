@@ -118,7 +118,6 @@ class SensorResults(object):
         return model
 
 
-
 if __name__ == '__main__':
     # Action.create('light', datetime(1970, 1, 1, 10, 00, 00), datetime(1970, 1, 1, 11, 00, 00))
     print Action('light').get_params()[0].hour # TODO: implement time comparison
