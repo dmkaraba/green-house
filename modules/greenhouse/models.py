@@ -8,24 +8,48 @@ from mongoengine import EmbeddedDocument, EmbeddedDocumentField, StringField,\
                         ObjectIdField, DateTimeField, FloatField, ReferenceField
 
 
-class ConditionDoc(DBDocument):
+# class ConditionDoc(DBDocument):
+#
+#     meta = {'collection': 'lifecycle.conditions'}
+#
+#     type = StringField(required=True)
+#     auto = BooleanField(required=True)
+#     min_value = FloatField()
+#     max_value = FloatField()
+#
+#
+# class ActionDoc(DBDocument):
+#
+#     meta = {'collection': 'lifecycle.actions'}
+#
+#     type = StringField(required=True)
+#     start = DateTimeField()
+#     stop = DateTimeField()
 
-    meta = {'collection': 'lifecycle.conditions'}
+### LIFECYCLE ###################################
+
+class TimerDoc(EmbeddedDocument):
+    start_date = DateTimeField()
+    end_date = DateTimeField()
+    start_time = DateTimeField(required=True)
+    end_time = DateTimeField(required=True)
+
+
+class ConditionDoc(EmbeddedDocument):
+    min_value = IntField(required=True)
+    max_value = IntField()
+
+
+class LifecycleDoc(DBDocument):
+
+    meta = {'collection': 'lifecycle'}
 
     type = StringField(required=True)
-    auto = BooleanField(required=True)
-    min_value = FloatField()
-    max_value = FloatField()
+    by_time = BooleanField(required=True)
+    timer = EmbeddedDocumentField(TimerDoc)
+    conditions = EmbeddedDocumentField(ConditionDoc)
 
-
-class ActionDoc(DBDocument):
-
-    meta = {'collection': 'lifecycle.actions'}
-
-    type = StringField(required=True)
-    start = DateTimeField()
-    stop = DateTimeField()
-
+### SENSOR RESULTS ##############################
 
 class SoilConditions(EmbeddedDocument):
     temperature = FloatField()
@@ -44,7 +68,7 @@ class AirInsideConditions(EmbeddedDocument):
 
 class SensorResultsDoc(DBDocument):
 
-    meta = {'collection': 'conditions'}
+    meta = {'collection': 'measures'}
 
     soil = EmbeddedDocumentField(SoilConditions)
     air_outside = EmbeddedDocumentField(AirOutsideConditions)

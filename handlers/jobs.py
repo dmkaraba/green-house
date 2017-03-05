@@ -9,11 +9,11 @@ from modules.greenhouse.objects import SensorResults
 def insert_all_conditions():
     print '>>> insert_all_conditions <<<'
     answer = pull_data()
-    SensorResults.create(ds18b20air=answer.DS18B20_air,
-                         ds18b20soil=answer.DS18B20_soil,
-                         bh1750=answer.BH1750,
-                         dht22=answer.DHT22,
-                         soilmoisture=answer.SoilMoisture)
+    measures = dict(answer)
+    print measures
+    del measures['rc']
+    print measures
+    SensorResults.create(**measures)
 
 
 def shoot_frame():

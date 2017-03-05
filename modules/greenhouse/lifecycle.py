@@ -2,10 +2,10 @@
 # -*- coding: utf-8 -*-
 
 import datetime
-from modules.greenhouse.objects import Condition, Action
-from modules.const import SOIL_MOISTURE, LIGHT
+from modules import const
+from modules.greenhouse.objects import Lifecycle
 from modules.greenhouse.sensors import SoilMoistureSensors
-from modules.greenhouse.controllers import Pump
+from modules.greenhouse.controllers import Pump, Light
 from utils.mixins import DateComparison, TimeComparison
 
 
@@ -24,48 +24,52 @@ def compare_logic(a, b, op):
         raise Exception('Unsupported operation %s' % op)
 
 
-class SoilMoistureWatcher(object):
-
-    condition = Condition(type=SOIL_MOISTURE)
-
-    def __init__(self):
-        self.min, self.max = self.condition.get_params()
-
-    def hold(self):
-        if self.condition.auto:
-            value = SoilMoistureSensors().read().moisture
-
-            if value <= self.min:
-                Pump.pulse(3)
-            elif value > self.max:
-                # send warning email
-                pass
-        else:
-            print 'This condition is not automated'
+# class SoilMoistureWatcher(object):
+#
+#     condition = Condition(type=const.SOIL_MOISTURE)
+#
+#     def __init__(self):
+#         self.min, self.max = self.condition.get_params()
+#
+#     def hold(self):
+#         if self.condition.auto:
+#             value = SoilMoistureSensors().read().moisture
+#
+#             if value <= self.min:
+#                 Pump.pulse(3)
+#             elif value > self.max:
+#                 # send warning email
+#                 pass
+#         else:
+#             print 'This condition is not automated'
 
 
 class LightsWatcher(object):
 
-    action = Action(type=LIGHT)
+    lifecycle_obj = Lifecycle(type=const.LIGHT)
+    performer = Light
 
     def __init__(self):
-        self.start, self.stop = self.action.get_params()
+        self.timer = self.lifecycle_obj.timer
+        self.conditions = self.lifecycle_obj.conditions
 
-    def satisfy_timer(self, timer): # TODO: rebuild shturmans timer object. Timer is condition.params
-        today = DateComparison.today()
-        weekday = today.weekday()
+    @classmethod
+    def satisfy_timer(cls):
 
-        now = datetime.datetime.now()
-        time = TimeComparison(now.hour, now.minute)
+        timer = cls.lifecycle_obj.timer
 
-        timer_start_date = timer.get('start_date').date() if timer.get('start_date') else ''
-        timer_end_date = timer.get('end_date').date() if timer.get('end_date') else ''
-        timer_start_time = timer.get('start_time').time() if timer.get('start_time') else ''
-        timer_end_time = timer.get('end_time').time() if timer.get('end_time') else ''
-        timer_weekdays = timer.get('weekdays')
+        time = TimeComparison(datetime.datetime.now().hour, datetime.datetime.now().minute)
+        timer_start_time = TimeComparison(timer.start_time.hour, timer.start_time.minute)
+        timer_end_time = TimeComparison(timer.end_time.hour, timer.end_time.minute)
+
+        if timer.start_date and timer.end_date:
+            today = DateComparison.today()
+            timer_start_date = DateComparison(timer.start_date.year, timer.start_date.month, timer.start_date.day)
+            timer_end_date = DateComparison(timer.end_date.year, timer.end_date.month, timer.end_date.day)
+        else:
+            timer_start_date = timer_end_date = today = ''
 
         satisfied_time_date = False
-        satisfied_weekdays = True
 
         # date and time checking
         if timer_start_time and timer_end_time:
@@ -90,12 +94,19 @@ class LightsWatcher(object):
                 else:
                     satisfied_time_date = False
 
-        # weekdays checking
-        if timer_weekdays and weekday not in timer_weekdays:
-            satisfied_weekdays = False
+        return satisfied_time_date
 
-        return satisfied_time_date and satisfied_weekdays
+    def satisfy_schedule(self):
+        return True
+
+    def perform(self):
+        if self.satisfy_timer() and self.satisfy_schedule():
+            self.execute()
+
+    def execute(self):
+        # actually turn on off
+        pass
+
 
 if __name__ == '__main__':
-    # time.sleep(5)
-    SoilMoistureWatcher().hold()
+    print LightsWatcher.satisfy_timer()
