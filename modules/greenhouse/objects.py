@@ -100,6 +100,7 @@ class Lifecycle(object):
     by_time = DBSharedProperty('by_time')
     timer = DBSharedProperty('timer')
     conditions = DBSharedProperty('conditions')
+    last_event = DBSharedProperty('last_event')
 
     def __init__(self, type=None, model=None):
         assert type or model, 'type or model are required'
@@ -112,7 +113,7 @@ class Lifecycle(object):
         new_model.save()
 
     @classmethod
-    def populate(cls, model, type, by_time, timer, conditions):
+    def populate(cls, model, type, by_time, timer, conditions, last_event):
         model.type = type
         model.by_time = by_time
         if timer:

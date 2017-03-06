@@ -25,3 +25,4 @@ class CreateLifecycle(Model):
     by_time = types.BooleanType(required=True)
     timer = ModelType(Timer)
     conditions = ModelType(Conditions)
+    last_event = types.DateTimeType()

@@ -56,9 +56,9 @@ class LightsWatcher(object):
     @classmethod
     def satisfy_timer(cls):
 
-        timer = cls.lifecycle_obj.timer
-
         time = TimeComparison(datetime.datetime.now().hour, datetime.datetime.now().minute)
+
+        timer = cls.lifecycle_obj.timer
         timer_start_time = TimeComparison(timer.start_time.hour, timer.start_time.minute)
         timer_end_time = TimeComparison(timer.end_time.hour, timer.end_time.minute)
 
@@ -96,17 +96,72 @@ class LightsWatcher(object):
 
         return satisfied_time_date
 
-    def satisfy_schedule(self):
+    @classmethod
+    def satisfy_schedule(cls):
+
+        time = TimeComparison(datetime.datetime.now().hour, datetime.datetime.now().minute)
+
+        timer = cls.lifecycle_obj.timer
+        timer_start_time = TimeComparison(timer.start_time.hour, timer.start_time.minute)
+
+        satisfied_last_event = False
+
+        if cls.lifecycle_obj.last_event:
+            last_event_time = TimeComparison(cls.lifecycle_obj.last_event.hour, cls.lifecycle_obj.last_event.minute)
+            if time <= last_event_time:
+                satisfied_last_event = True
+        else:
+            if time >= timer_start_time:
+                satisfied_last_event = True
+
+        return cls.satisfy_timer() and satisfied_last_event
+
+    @classmethod
+    def satisfy_time(cls):
+
+        time = TimeComparison(datetime.datetime.now().hour, datetime.datetime.now().minute)
+
+        timer = cls.lifecycle_obj.timer
+        timer_start_time = TimeComparison(timer.start_time.hour, timer.start_time.minute)
+        timer_end_time = TimeComparison(timer.end_time.hour, timer.end_time.minute)
+
+        return timer_end_time >= time >= timer_start_time
+
+    @classmethod
+    def satisfy_date(cls):
+
+        timer = cls.lifecycle_obj.timer
+
+        if timer.start_date and timer.end_date:
+            timer_start_date = DateComparison(timer.start_date.year, timer.start_date.month, timer.start_date.day)
+            timer_end_date = DateComparison(timer.end_date.year, timer.end_date.month, timer.end_date.day)
+            return timer_end_date >= DateComparison.today() >= timer_start_date
+        else:
+            return True
+
+    @classmethod
+    def satisfied_last_event(cls):
+
+        time = TimeComparison(datetime.datetime.now().hour, datetime.datetime.now().minute)
+
+        if cls.lifecycle_obj.last_event:
+            last_event_time = TimeComparison(cls.lifecycle_obj.last_event.hour, cls.lifecycle_obj.last_event.minute)
+            return not time > last_event_time
         return True
 
-    def perform(self):
-        if self.satisfy_timer() and self.satisfy_schedule():
-            self.execute()
+    @classmethod
+    def test(cls):
+        return cls.satisfy_date(), cls.satisfy_time(), cls.satisfied_last_event()
+    # def perform(self):
+    #     if self.satisfy_timer() and self.satisfy_schedule():
+    #         self.execute()
 
-    def execute(self):
-        # actually turn on off
-        pass
+    # @classmethod
+    # def execute(cls):
+    #     if cls.satisfy_timer() and
+    #     # actually turn on off
+    #     pass
 
 
 if __name__ == '__main__':
-    print LightsWatcher.satisfy_timer()
+    print LightsWatcher.test()

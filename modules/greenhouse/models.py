@@ -42,12 +42,13 @@ class ConditionDoc(EmbeddedDocument):
 
 class LifecycleDoc(DBDocument):
 
-    meta = {'collection': 'lifecycle'}
+    meta = {'collection': 'lifecycle'}  # TODO: index - type
 
     type = StringField(required=True)
     by_time = BooleanField(required=True)
     timer = EmbeddedDocumentField(TimerDoc)
     conditions = EmbeddedDocumentField(ConditionDoc)
+    last_event = DateTimeField()
 
 ### SENSOR RESULTS ##############################
 

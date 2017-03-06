@@ -7,10 +7,10 @@ from datetime import datetime
 
 
 T = Timer({
-    'start_time': datetime(2017, 3, 5, 10, 0, 0),
-    'end_time': datetime(2017, 3, 5, 22, 00, 0),
-    # 'start_date': datetime(2017, 3, 3, 0, 0, 0),
-    # 'end_date': datetime(2017, 3, 4, 0, 0, 0),
+    'start_time': datetime(2017, 1, 1, 10, 0, 0),
+    'end_time': datetime(2017, 1, 1, 22, 00, 0),
+    'start_date': datetime(2017, 3, 3, 0, 0, 0),
+    'end_date': datetime(2017, 3, 7, 0, 0, 0),
 })
 C = Conditions({'min_value': 30, 'max_value': 70})
 
