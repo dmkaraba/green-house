@@ -75,4 +75,4 @@ class SensorResultsDoc(DBDocument):
     soil = EmbeddedDocumentField(SoilConditions)
     air_outside = EmbeddedDocumentField(AirOutsideConditions)
     air_inside = EmbeddedDocumentField(AirInsideConditions)
-    datetime = DateTimeField(default=datetime.datetime.utcnow)
+    datetime = DateTimeField(default=datetime.datetime.now)
