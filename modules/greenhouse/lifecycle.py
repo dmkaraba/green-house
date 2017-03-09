@@ -150,18 +150,24 @@ class LightsWatcher(object):
         return True
 
     @classmethod
-    def test(cls):
-        return cls.satisfy_date(), cls.satisfy_time(), cls.satisfied_last_event()
-    # def perform(self):
-    #     if self.satisfy_timer() and self.satisfy_schedule():
-    #         self.execute()
-
-    # @classmethod
-    # def execute(cls):
-    #     if cls.satisfy_timer() and
-    #     # actually turn on off
-    #     pass
+    def perform(cls):
+        if cls.satisfy_date() and cls.satisfy_time() and cls.satisfied_last_event():
+            if not cls.lifecycle_obj.state:
+                cls.performer.set_up()
+                cls.performer.on()
+                cls.lifecycle_obj.state = True
+                cls.lifecycle_obj.last_event = datetime.datetime.utcnow
+                cls.lifecycle_obj.save()
+                print 'ON'
+        elif not cls.satisfy_time() or not cls.satisfy_date():
+            if cls.lifecycle_obj.state:
+                cls.performer.set_up()
+                cls.performer.off()
+                cls.lifecycle_obj.state = False
+                cls.lifecycle_obj.last_event = datetime.datetime.utcnow
+                cls.lifecycle_obj.save()
+                print 'OFF'
 
 
 if __name__ == '__main__':
-    print LightsWatcher.test()
+    LightsWatcher.perform()

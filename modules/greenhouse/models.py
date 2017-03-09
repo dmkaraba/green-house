@@ -46,6 +46,7 @@ class LifecycleDoc(DBDocument):
 
     type = StringField(required=True)
     by_time = BooleanField(required=True)
+    state = BooleanField()
     timer = EmbeddedDocumentField(TimerDoc)
     conditions = EmbeddedDocumentField(ConditionDoc)
     last_event = DateTimeField()

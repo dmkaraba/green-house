@@ -98,6 +98,7 @@ class Lifecycle(object):
 
     type = DBSharedProperty('type')
     by_time = DBSharedProperty('by_time')
+    state = DBSharedProperty('state')
     timer = DBSharedProperty('timer')
     conditions = DBSharedProperty('conditions')
     last_event = DBSharedProperty('last_event')
@@ -123,6 +124,9 @@ class Lifecycle(object):
             model.conditions = cls.ConditionModelClass(min_value=conditions.min_value,
                                                        max_value=conditions.max_value)
         return model
+
+    def save(self):
+        self.model.save()
 
 
 

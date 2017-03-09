@@ -12,11 +12,6 @@ def insert_all_conditions():
     insert_all_conditions()
 
 @celerybeat_app.task(ignore_result=True, queue='main')
-def soil_moisture_test():
-    from handlers.jobs import soil_moisture_test
-    soil_moisture_test()
-
-@celerybeat_app.task(ignore_result=True, queue='main')
 def shoot_frame():
     from handlers.jobs import shoot_frame
     shoot_frame()
