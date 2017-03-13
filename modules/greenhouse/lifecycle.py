@@ -156,7 +156,7 @@ class LightWatcher(object):
                 cls.performer.set_up()
                 cls.performer.on()
                 cls.lifecycle_obj.state = True
-                cls.lifecycle_obj.last_event = datetime.datetime.now
+                cls.lifecycle_obj.last_event = datetime.datetime.now()
                 cls.lifecycle_obj.save()
                 print 'ON'
         elif not cls.satisfy_time() or not cls.satisfy_date():
@@ -164,9 +164,11 @@ class LightWatcher(object):
                 cls.performer.set_up()
                 cls.performer.off()
                 cls.lifecycle_obj.state = False
-                cls.lifecycle_obj.last_event = datetime.datetime.now
+                cls.lifecycle_obj.last_event = datetime.datetime.now()
                 cls.lifecycle_obj.save()
                 print 'OFF'
+        else:
+            print 'PASS'
 
 
 if __name__ == '__main__':

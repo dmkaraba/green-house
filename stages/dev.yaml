@@ -13,6 +13,13 @@ celerybeat:
           minute: '*/10'
       options:
         queue: 'main'
+    perform_scenarios:
+      task: 'handlers.tasks.perform_scenarios'
+      schedule:
+        crontab:
+          minute: '*/1'
+      options:
+        queue: 'main'
     shoot_frame:
       task: 'handlers.tasks.shoot_frame'
       schedule:

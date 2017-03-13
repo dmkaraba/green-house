@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from modules.greenhouse.sensor_answers import AllSensorsAnswer
 from modules.greenhouse.sensors import DS18B20_Air, DS18B20_Soil, \
                                        BH1750, DHT22, SoilMoistureSensors
-from modules.greenhouse.sensor_answers import AllSensorsAnswer
 
 
 def pull_data():

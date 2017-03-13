@@ -2,12 +2,13 @@
 # -*- coding: utf-8 -*-
 
 from modules.greenhouse.camera import Camera
+from modules.greenhouse.lifecycle import LightWatcher
 from utils.sensors.reader import pull_data
 from modules.greenhouse.objects import SensorResults
 
 
 def insert_all_conditions():
-    print '>>> insert_all_conditions <<<'
+    print '>>> insert all conditions <<<'
     answer = pull_data()
     measures = dict(answer)
     print measures
@@ -16,9 +17,11 @@ def insert_all_conditions():
     SensorResults.create(**measures)
 
 
+def perform_scenarios():
+    print '>>> perform scenario <<<'
+    LightWatcher.perform()
+
+
 def shoot_frame():
+    print '>>> shoot frame <<<'
     Camera.shoot()
-
-
-if __name__=='__main__':
-    insert_all_conditions()

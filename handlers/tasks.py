@@ -12,6 +12,11 @@ def insert_all_conditions():
     insert_all_conditions()
 
 @celerybeat_app.task(ignore_result=True, queue='main')
+def perform_scenarios():
+    from handlers.jobs import perform_scenarios
+    perform_scenarios()
+
+@celerybeat_app.task(ignore_result=True, queue='main')
 def shoot_frame():
     from handlers.jobs import shoot_frame
     shoot_frame()
