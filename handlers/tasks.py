@@ -16,59 +16,59 @@ def perform_scenarios():
     from handlers.jobs import perform_scenarios
     perform_scenarios()
 
-@celerybeat_app.task(ignore_result=True, queue='main')
-def shoot_frame():
-    from handlers.jobs import shoot_frame
-    shoot_frame()
+# @celerybeat_app.task(ignore_result=True, queue='main')
+# def shoot_frame():
+#     from handlers.jobs import shoot_frame
+#     shoot_frame()
 
-@celeryd_app.task(ignore_result=True, queue='mqtt')
-def fans():
-    from modules.mqtt_interaction.base import FansMQTTClass
-    FansMQTTClass().sub(config.mqtt_topics_sub['fans'])
-
-@celeryd_app.task(ignore_result=True, queue='mqtt')
-def lights():
-    from modules.mqtt_interaction.base import LightMQTTClass
-    LightMQTTClass().sub(config.mqtt_topics_sub['lights'])
-
-@celeryd_app.task(ignore_result=True, queue='mqtt')
-def pumps():
-    from modules.mqtt_interaction.base import PumpsMQTTClass
-    PumpsMQTTClass().sub(config.mqtt_topics_sub['pumps'])
-
-@celeryd_app.task(ignore_result=True, queue='mqtt')
-def sensors():
-    from modules.mqtt_interaction.handlers import SensorsMQTTDmn
-    SensorsMQTTDmn().run()
-
-
-@celeryd_app.task(ignore_result=True, queue='gh.incoming')
-def push_event():
-    pass
-
-@celeryd_app.task(ignore_result=True, queue='gh.outcoming')
-def push_action():
-    pass
-
-
-class BaseQueue(object):
-    pass
+# @celeryd_app.task(ignore_result=True, queue='mqtt')
+# def fans():
+#     from modules.mqtt_interaction.base import FansMQTTClass
+#     FansMQTTClass().sub(config.mqtt_topics_sub['fans'])
+#
+# @celeryd_app.task(ignore_result=True, queue='mqtt')
+# def lights():
+#     from modules.mqtt_interaction.base import LightMQTTClass
+#     LightMQTTClass().sub(config.mqtt_topics_sub['lights'])
+#
+# @celeryd_app.task(ignore_result=True, queue='mqtt')
+# def pumps():
+#     from modules.mqtt_interaction.base import PumpsMQTTClass
+#     PumpsMQTTClass().sub(config.mqtt_topics_sub['pumps'])
+#
+# @celeryd_app.task(ignore_result=True, queue='mqtt')
+# def sensors():
+#     from modules.mqtt_interaction.handlers import SensorsMQTTDmn
+#     SensorsMQTTDmn().run()
+#
+#
+# @celeryd_app.task(ignore_result=True, queue='gh.incoming')
+# def push_event():
+#     pass
+#
+# @celeryd_app.task(ignore_result=True, queue='gh.outcoming')
+# def push_action():
+#     pass
 
 
-class IncomingQueue(BaseQueue):
-    def push(self, obj):
-        push_event.apply_async(args=[obj])
-
-
-class OutcomingQueue(BaseQueue):
-    def push(self, obj):
-        push_action.apply_async(args=[obj])
-
-
-fans.apply_async()
-lights.apply_async()
-pumps.apply_async()
-sensors.apply_async()
+# class BaseQueue(object):
+#     pass
+#
+#
+# class IncomingQueue(BaseQueue):
+#     def push(self, obj):
+#         push_event.apply_async(args=[obj])
+#
+#
+# class OutcomingQueue(BaseQueue):
+#     def push(self, obj):
+#         push_action.apply_async(args=[obj])
+#
+#
+# fans.apply_async()
+# lights.apply_async()
+# pumps.apply_async()
+# sensors.apply_async()
 
 # TODO: add lights on/off task
 

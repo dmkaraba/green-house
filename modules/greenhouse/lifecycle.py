@@ -7,6 +7,7 @@ from modules.greenhouse.objects import Lifecycle
 from modules.greenhouse.sensors import SoilMoistureSensors
 from modules.greenhouse.controllers import Pump, Light
 from utils.mixins import DateComparison, TimeComparison
+from modules.const import PERFORMERS
 
 
 def compare_logic(a, b, op):
@@ -44,132 +45,49 @@ def compare_logic(a, b, op):
 #             print 'This condition is not automated'
 
 
-class LightWatcher(object):
+class PerformerWatcher(object):
 
-    lifecycle_obj = Lifecycle(type=const.LIGHT)
-    performer = Light
+    def __init__(self, performer):
+        self.performer = PERFORMERS[performer]
+        self.lifecycle_obj = Lifecycle(type=performer)
+        self.timer = Lifecycle(type=performer).timer
+        self.conditions = Lifecycle(type=performer).conditions
+        self.last_event = Lifecycle(type=performer).last_event
 
-    def __init__(self):
-        self.timer = self.lifecycle_obj.timer
-        self.conditions = self.lifecycle_obj.conditions
-
-    # @classmethod
-    # def satisfy_timer(cls):
-    #
-    #     time = TimeComparison(datetime.datetime.now().hour, datetime.datetime.now().minute)
-    #
-    #     timer = cls.lifecycle_obj.timer
-    #     timer_start_time = TimeComparison(timer.start_time.hour, timer.start_time.minute)
-    #     timer_end_time = TimeComparison(timer.end_time.hour, timer.end_time.minute)
-    #
-    #     if timer.start_date and timer.end_date:
-    #         today = DateComparison.today()
-    #         timer_start_date = DateComparison(timer.start_date.year, timer.start_date.month, timer.start_date.day)
-    #         timer_end_date = DateComparison(timer.end_date.year, timer.end_date.month, timer.end_date.day)
-    #     else:
-    #         timer_start_date = timer_end_date = today = ''
-    #
-    #     satisfied_time_date = False
-    #
-    #     # date and time checking
-    #     if timer_start_time and timer_end_time:
-    #         if timer_start_date and timer_end_date:
-    #             # date and time comporation
-    #             if timer_end_date > today > timer_start_date:
-    #                 satisfied_time_date = True
-    #             elif timer_end_date == today and today == timer_start_date:
-    #                 # time only check
-    #                 if timer_end_time >= time >= timer_start_time:
-    #                     satisfied_time_date = True
-    #                 else:
-    #                     satisfied_time_date = False
-    #             elif today == timer_end_date and time <= timer_end_time:
-    #                 satisfied_time_date = True
-    #             elif today == timer_start_date and time >= timer_start_time:
-    #                 satisfied_time_date = True
-    #         else:
-    #             # just time comporation
-    #             if timer_end_time >= time >= timer_start_time:
-    #                 satisfied_time_date = True
-    #             else:
-    #                 satisfied_time_date = False
-    #
-    #     return satisfied_time_date
-
-    # @classmethod
-    # def satisfy_schedule(cls):
-    #
-    #     time = TimeComparison(datetime.datetime.now().hour, datetime.datetime.now().minute)
-    #
-    #     timer = cls.lifecycle_obj.timer
-    #     timer_start_time = TimeComparison(timer.start_time.hour, timer.start_time.minute)
-    #
-    #     satisfied_last_event = False
-    #
-    #     if cls.lifecycle_obj.last_event:
-    #         last_event_time = TimeComparison(cls.lifecycle_obj.last_event.hour, cls.lifecycle_obj.last_event.minute)
-    #         if time <= last_event_time:
-    #             satisfied_last_event = True
-    #     else:
-    #         if time >= timer_start_time:
-    #             satisfied_last_event = True
-    #
-    #     return cls.satisfy_timer() and satisfied_last_event
-
-    @classmethod
-    def satisfy_time(cls):
-
+    def satisfy_time(self):
         time = TimeComparison(datetime.datetime.now().hour, datetime.datetime.now().minute)
-
-        timer = cls.lifecycle_obj.timer
-        timer_start_time = TimeComparison(timer.start_time.hour, timer.start_time.minute)
-        timer_end_time = TimeComparison(timer.end_time.hour, timer.end_time.minute)
-
+        timer_start_time = TimeComparison(self.timer.start_time.hour, self.timer.start_time.minute)
+        timer_end_time = TimeComparison(self.timer.end_time.hour, self.timer.end_time.minute)
         return timer_end_time >= time >= timer_start_time
 
-    @classmethod
-    def satisfy_date(cls):
-
-        timer = cls.lifecycle_obj.timer
-
-        if timer.start_date and timer.end_date:
-            timer_start_date = DateComparison(timer.start_date.year, timer.start_date.month, timer.start_date.day)
-            timer_end_date = DateComparison(timer.end_date.year, timer.end_date.month, timer.end_date.day)
+    def satisfy_date(self):
+        if self.timer.start_date and self.timer.end_date:
+            timer_start_date = DateComparison(self.timer.start_date.year, self.timer.start_date.month, self.timer.start_date.day)
+            timer_end_date = DateComparison(self.timer.end_date.year, self.timer.end_date.month, self.timer.end_date.day)
             return timer_end_date >= DateComparison.today() >= timer_start_date
         else:
             return True
 
-    @classmethod
-    def satisfied_last_event(cls):
-
+    def satisfied_last_event(self):
         time = TimeComparison(datetime.datetime.now().hour, datetime.datetime.now().minute)
-
-        if cls.lifecycle_obj.last_event:
-            last_event_time = TimeComparison(cls.lifecycle_obj.last_event.hour, cls.lifecycle_obj.last_event.minute)
-            return not time > last_event_time
-        return True
-
-    @classmethod
-    def perform(cls):
-        if cls.satisfy_date() and cls.satisfy_time() and cls.satisfied_last_event():
-            if not cls.lifecycle_obj.state:
-                cls.performer.set_up()
-                cls.performer.on()
-                cls.lifecycle_obj.state = True
-                cls.lifecycle_obj.last_event = datetime.datetime.now()
-                cls.lifecycle_obj.save()
-                print 'ON'
-        elif not cls.satisfy_time() or not cls.satisfy_date():
-            if cls.lifecycle_obj.state:
-                cls.performer.set_up()
-                cls.performer.off()
-                cls.lifecycle_obj.state = False
-                cls.lifecycle_obj.last_event = datetime.datetime.now()
-                cls.lifecycle_obj.save()
-                print 'OFF'
+        if self.last_event:
+            last_event_time = TimeComparison(self.last_event.hour, self.last_event.minute)
+            return time <= last_event_time
         else:
-            print 'PASS'
+            return True
 
-
-if __name__ == '__main__':
-    LightWatcher.perform()
+    def perform(self):
+        if self.satisfy_date() and self.satisfy_time() and self.satisfied_last_event():
+            if not self.lifecycle_obj.state:
+                self.performer.set_up()
+                self.performer.on()
+                self.lifecycle_obj.state = True
+                self.lifecycle_obj.last_event = datetime.datetime.now()
+                self.lifecycle_obj.save()
+        elif not self.satisfy_time() or not self.satisfy_date():
+            if self.lifecycle_obj.state:
+                self.performer.set_up()
+                self.performer.off()
+                self.lifecycle_obj.state = False
+                self.lifecycle_obj.last_event = datetime.datetime.now()
+                self.lifecycle_obj.save()

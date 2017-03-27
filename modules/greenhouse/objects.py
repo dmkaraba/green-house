@@ -129,7 +129,6 @@ class Lifecycle(object):
         self.model.save()
 
 
-
 class SensorResults(object):
 
     ModelClass = SensorResultsDoc

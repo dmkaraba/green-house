@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from modules.greenhouse.camera import Camera
-from modules.greenhouse.lifecycle import LightWatcher
+from modules.greenhouse.lifecycle import PerformerWatcher
 from utils.sensors.reader import pull_data
 from modules.greenhouse.objects import SensorResults
 
@@ -19,9 +19,10 @@ def insert_all_conditions():
 
 def perform_scenarios():
     print '>>> perform scenario <<<'
-    LightWatcher.perform()
+    PerformerWatcher('light').perform()
 
 
-def shoot_frame():
-    print '>>> shoot frame <<<'
-    Camera.shoot()
+# def shoot_frame():
+#     print '>>> shoot frame <<<'
+#     Camera.shoot()
+

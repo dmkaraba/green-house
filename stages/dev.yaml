@@ -1,32 +1,39 @@
 celeryd:
-  CELERY_IMPORTS: ["handlers.tasks"]
-  BROKER_URL: "amqp://guest@localhost//"
-  CELERY_TIMEZONE: 'Europe/Minsk'
+  BROKER_URL: redis://localhost:6379/0
+  CELERYD_TASK_TIME_LIMIT: 60
+  CELERY_IMPORTS: [handlers.tasks]
+  CELERY_ENABLE_UTC: true
+  CELERY_ACCEPT_CONTENT: [json]
+  CELERY_TASK_SERIALIZER: json
+  CELERY_RESULT_SERIALIZER: json
+  CELERY_BACKEND: redis
 
 celerybeat:
-  CELERY_TIMEZONE: 'Europe/Minsk'
+  BROKER_URL: redis://localhost:6379/0
+  CELERY_TIMEZONE: UTC
+  CELERY_ENABLE_UTC: true
+  CELERY_DISABLE_RATE_LIMITS: True
+  CELERY_ACCEPT_CONTENT: [json]
+  CELERY_TASK_SERIALIZER: json
+  CELERY_RESULT_SERIALIZER: json
   CELERYBEAT_SCHEDULE:
     conditions_to_db:
       task: 'handlers.tasks.insert_all_conditions'
       schedule:
         crontab:
           minute: '*/10'
-      options:
-        queue: 'main'
     perform_scenarios:
       task: 'handlers.tasks.perform_scenarios'
       schedule:
         crontab:
           minute: '*/1'
-      options:
-        queue: 'main'
-    shoot_frame:
-      task: 'handlers.tasks.shoot_frame'
-      schedule:
-        crontab:
-          minute: '*/20'
-      options:
-        queue: 'main'
+#    shoot_frame:
+#      task: 'handlers.tasks.shoot_frame'
+#      schedule:
+#        crontab:
+#          minute: '*/20'
+#      options:
+#        queue: 'main'
 
 sensors:
   gpio_pins:
