@@ -4,7 +4,7 @@
 from modules.greenhouse.objects import Lifecycle
 from web_interface.web_events.config_requests import CreateLifecycle, Timer, Conditions
 from datetime import datetime
-
+from handlers.jobs import watch_for_soilmoisture, watch_for_fans, watch_for_lights
 
 T = Timer({
     'start_time': datetime(2017, 1, 1, 7, 0, 0),
@@ -15,13 +15,17 @@ T = Timer({
 C = Conditions({'min_value': 30, 'max_value': 70})
 
 data = {
-    'by_time': True,
-    'type': 'light',
-    'timer': T,
-    # 'conditions': C
+    'by_time': False,
+    'type': 'soil_moisture',
+    # 'timer': T,
+    'conditions': C
     }
 
 
 if __name__ == '__main__':
-    lc = CreateLifecycle(data)
-    Lifecycle.create(**lc)
+    # lc = CreateLifecycle(data)
+    # Lifecycle.create(**lc)
+
+    watch_for_fans()
+    watch_for_lights()
+    watch_for_soilmoisture()

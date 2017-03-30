@@ -22,8 +22,18 @@ celerybeat:
       schedule:
         crontab:
           minute: '*/10'
-    perform_scenarios:
-      task: 'handlers.tasks.perform_scenarios'
+    light_watchdog:
+      task: 'handlers.tasks.light_watchdog'
+      schedule:
+        crontab:
+          minute: '*/1'
+    fan_watchdog:
+      task: 'handlers.tasks.fan_watchdog'
+      schedule:
+        crontab:
+          minute: '*/1'
+    soilmoisture_watchdog:
+      task: 'handlers.tasks.soilmoisture_watchdog'
       schedule:
         crontab:
           minute: '*/1'

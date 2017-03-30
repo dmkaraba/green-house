@@ -2,12 +2,9 @@
 # -*- coding: utf-8 -*-
 
 import datetime
-from modules import const
 from modules.greenhouse.objects import Lifecycle
-from modules.greenhouse.sensors import SoilMoistureSensors
-from modules.greenhouse.controllers import Pump, Light
 from utils.mixins import DateComparison, TimeComparison
-from modules.const import PERFORMERS
+from modules.const import PERFORMERS, SENSORS
 
 
 def compare_logic(a, b, op):
@@ -25,34 +22,14 @@ def compare_logic(a, b, op):
         raise Exception('Unsupported operation %s' % op)
 
 
-# class SoilMoistureWatcher(object):
-#
-#     condition = Condition(type=const.SOIL_MOISTURE)
-#
-#     def __init__(self):
-#         self.min, self.max = self.condition.get_params()
-#
-#     def hold(self):
-#         if self.condition.auto:
-#             value = SoilMoistureSensors().read().moisture
-#
-#             if value <= self.min:
-#                 Pump.pulse(3)
-#             elif value > self.max:
-#                 # send warning email
-#                 pass
-#         else:
-#             print 'This condition is not automated'
+class BaseWatchdog(object):
 
-
-class PerformerWatcher(object):
-
-    def __init__(self, performer):
-        self.performer = PERFORMERS[performer]
-        self.lifecycle_obj = Lifecycle(type=performer)
-        self.timer = Lifecycle(type=performer).timer
-        self.conditions = Lifecycle(type=performer).conditions
-        self.last_event = Lifecycle(type=performer).last_event
+    def __init__(self):
+        self.sensor = None
+        self.performer = None
+        self.lifecycle_obj = None
+        self.timer = None
+        self.last_event = None
 
     def satisfy_time(self):
         time = TimeComparison(datetime.datetime.now().hour, datetime.datetime.now().minute)
@@ -70,13 +47,20 @@ class PerformerWatcher(object):
 
     def satisfied_last_event(self):
         time = TimeComparison(datetime.datetime.now().hour, datetime.datetime.now().minute)
+        date = DateComparison(datetime.datetime.now().year, datetime.datetime.now().month, datetime.datetime.now().day)
         if self.last_event:
             last_event_time = TimeComparison(self.last_event.hour, self.last_event.minute)
-            return time <= last_event_time
+            last_event_date = DateComparison(self.last_event.year, self.last_event.month, self.last_event.day)
+            if date > last_event_date:
+                return True
+            else:
+                return time <= last_event_time
         else:
             return True
 
-    def perform(self):
+    def watch(self):
+        print '>>> Timer watch'
+        print self.satisfy_date(), self.satisfy_time(), self.satisfied_last_event()
         if self.satisfy_date() and self.satisfy_time() and self.satisfied_last_event():
             if not self.lifecycle_obj.state:
                 self.performer.set_up()
@@ -91,3 +75,48 @@ class PerformerWatcher(object):
                 self.lifecycle_obj.state = False
                 self.lifecycle_obj.last_event = datetime.datetime.now()
                 self.lifecycle_obj.save()
+
+
+class TimerWatchdog(BaseWatchdog):
+
+    def __init__(self, performer):
+        super(TimerWatchdog, self).__init__()
+        self.performer = PERFORMERS[performer]
+        self.lifecycle_obj = Lifecycle(type=performer)
+        self.timer = Lifecycle(type=performer).timer
+        self.last_event = Lifecycle(type=performer).last_event
+
+
+class ConditinsWatchdog(BaseWatchdog):
+
+    def __init__(self, condition, performer):  # soil_moisture pump
+        super(ConditinsWatchdog, self).__init__()
+        self.sensor = SENSORS[condition]()
+        self.performer = PERFORMERS[performer]
+        self.lifecycle_obj = Lifecycle(type=condition)
+        self.conditions = Lifecycle(type=condition).conditions
+        self.last_event = Lifecycle(type=condition).last_event
+
+    def satisfy_conditions(self):
+        value = self.sensor.read().moisture
+        goal = self.conditions
+        print goal.min_value, value
+        # return value < goal.min_value  # TODO: we need 50% moisture (for example)
+        return False
+
+    def satisfied_last_event(self, delta_minutes=30):
+        time_object_to_compare = datetime.datetime.now() - datetime.timedelta(minutes=delta_minutes)
+        time_to_compare = TimeComparison(time_object_to_compare.hour, time_object_to_compare.minute)
+        if self.last_event:
+            last_event_time = TimeComparison(self.last_event.hour, self.last_event.minute)
+            return time_to_compare > last_event_time
+        else:
+            return True
+
+    def watch(self):
+        print '>>> Condition watch'
+        print self.satisfy_conditions(), self.satisfied_last_event()
+        if self.satisfy_conditions() and self.satisfied_last_event():
+            self.performer.pulse(3)
+            self.lifecycle_obj.last_event = datetime.datetime.now()
+            self.lifecycle_obj.save()

@@ -8,24 +8,6 @@ from mongoengine import EmbeddedDocument, EmbeddedDocumentField, StringField,\
                         ObjectIdField, DateTimeField, FloatField, ReferenceField
 
 
-# class ConditionDoc(DBDocument):
-#
-#     meta = {'collection': 'lifecycle.conditions'}
-#
-#     type = StringField(required=True)
-#     auto = BooleanField(required=True)
-#     min_value = FloatField()
-#     max_value = FloatField()
-#
-#
-# class ActionDoc(DBDocument):
-#
-#     meta = {'collection': 'lifecycle.actions'}
-#
-#     type = StringField(required=True)
-#     start = DateTimeField()
-#     stop = DateTimeField()
-
 ### LIFECYCLE ###################################
 
 class TimerDoc(EmbeddedDocument):
@@ -46,7 +28,8 @@ class LifecycleDoc(DBDocument):
 
     type = StringField(required=True)
     by_time = BooleanField(required=True)
-    state = BooleanField()
+    active = BooleanField(default=True)
+    state = BooleanField(default=False)
     timer = EmbeddedDocumentField(TimerDoc)
     conditions = EmbeddedDocumentField(ConditionDoc)
     last_event = DateTimeField()

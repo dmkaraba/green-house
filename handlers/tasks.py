@@ -12,9 +12,19 @@ def insert_all_conditions():
     insert_all_conditions()
 
 @celerybeat_app.task(ignore_result=True, queue='main')
-def perform_scenarios():
-    from handlers.jobs import perform_scenarios
-    perform_scenarios()
+def light_watchdog():
+    from handlers.jobs import watch_for_lights
+    watch_for_lights()
+
+@celerybeat_app.task(ignore_result=True, queue='main')
+def fan_watchdog():
+    from handlers.jobs import watch_for_fans
+    watch_for_fans()
+
+@celerybeat_app.task(ignore_result=True, queue='main')
+def soilmoisture_watchdog():
+    from handlers.jobs import watch_for_soilmoisture
+    watch_for_soilmoisture()
 
 # @celerybeat_app.task(ignore_result=True, queue='main')
 # def shoot_frame():

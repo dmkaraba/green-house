@@ -10,11 +10,12 @@ def test_sensors():
                DHT22, SoilMoistureSensors)
     for sensor in sensors:
         name, answer = sensor.NAME, sensor().read()
-        if answer['status'] == 'success':
-            value = answer['result']
-            print 'OK   | {0:<33} | {1}'.format(name, value)
-        else:
-            print 'FAIL | {0:<33} | {1}'.format(name, answer['status'])
+        print name, answer
+        # if answer['status'] == 'success':
+        #     value = answer['result']
+        #     print 'OK   | {0:<33} | {1}'.format(name, value)
+        # else:
+        #     print 'FAIL | {0:<33} | {1}'.format(name, answer['status'])
 
 def test_relay_performers():
 
@@ -38,6 +39,6 @@ def test_servo():
 
 
 if __name__ == '__main__':
-    test_relay_performers()
+    # test_relay_performers()
     # test_servo()
     test_sensors()
