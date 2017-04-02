@@ -44,7 +44,7 @@ class RelayBase(object):
     def off(cls):
         if cls.SETED_UP:
             GPIO.output(cls.RELAY, GPIO.HIGH)
-            return {'status': 'success', 'result': False, 'msg': 'turned off'}
+            return {'status': 'success', 'result': False, 'msg': 'turned off'}  # TODO: rebuild to answer objects
         else:
             return {'status': 'success', 'result': False, 'msg': 'was not seted up'}
 
