@@ -119,6 +119,6 @@ class ConditinsWatchdog(BaseWatchdog):
         print '>>> Condition watch'
         print self.satisfy_conditions(), self.satisfied_last_event(), self.active
         if self.satisfy_conditions() and self.satisfied_last_event() and self.active:
-            self.performer.pulse(3)
+            self.performer.pulse(10)
             self.lifecycle_obj.last_event = datetime.datetime.now()
             self.lifecycle_obj.save()
