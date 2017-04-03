@@ -27,9 +27,14 @@ def watch_for_fans():
     TimerWatchdog('fan').watch()
 
 
-def watch_for_soilmoisture():
-    print '>>> perform soilmoisture <<<'
-    ConditinsWatchdog('soil_moisture', 'pump').watch()
+def watch_for_soilmoisture_a():
+    print '>>> perform soilmoisture A <<<'
+    ConditinsWatchdog('soil_moisture_a', 'pump_a').watch()
+
+
+def watch_for_soilmoisture_b():
+    print '>>> perform soilmoisture B <<<'
+    ConditinsWatchdog('soil_moisture_b', 'pump_b').watch()
 
 
 # def shoot_frame():

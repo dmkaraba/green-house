@@ -32,8 +32,13 @@ celerybeat:
       schedule:
         crontab:
           minute: '*/1'
-    soilmoisture_watchdog:
-      task: 'handlers.tasks.soilmoisture_watchdog'
+    soilmoisture_a_watchdog:
+      task: 'handlers.tasks.soilmoisture_a_watchdog'
+      schedule:
+        crontab:
+          minute: '*/1'
+    soilmoisture_b_watchdog:
+      task: 'handlers.tasks.soilmoisture_b_watchdog'
       schedule:
         crontab:
           minute: '*/1'
@@ -60,8 +65,8 @@ relays:
   gpio_pins:
     servo: 17
     lights: 19
-    pump_1: 20
-    pump_2: 21
+    pump_a: 20
+    pump_b: 21
     fans: 26
 
 mongodb:

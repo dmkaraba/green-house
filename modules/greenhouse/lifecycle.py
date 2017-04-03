@@ -30,6 +30,7 @@ class BaseWatchdog(object):
         self.lifecycle_obj = None
         self.timer = None
         self.last_event = None
+        self.active = None
 
     def satisfy_time(self):
         time = TimeComparison(datetime.datetime.now().hour, datetime.datetime.now().minute)
@@ -60,8 +61,8 @@ class BaseWatchdog(object):
 
     def watch(self):
         print '>>> Timer watch'
-        print self.satisfy_date(), self.satisfy_time(), self.satisfied_last_event()
-        if self.satisfy_date() and self.satisfy_time() and self.satisfied_last_event():
+        print self.satisfy_date(), self.satisfy_time(), self.satisfied_last_event(), self.active
+        if self.satisfy_date() and self.satisfy_time() and self.satisfied_last_event() and self.active:
             if not self.lifecycle_obj.state:
                 self.performer.set_up()
                 self.performer.on()
@@ -85,24 +86,25 @@ class TimerWatchdog(BaseWatchdog):
         self.lifecycle_obj = Lifecycle(type=performer)
         self.timer = Lifecycle(type=performer).timer
         self.last_event = Lifecycle(type=performer).last_event
+        self.active = Lifecycle(type=performer).active
 
 
 class ConditinsWatchdog(BaseWatchdog):
 
-    def __init__(self, condition, performer):  # soil_moisture pump
+    def __init__(self, condition, performer):
         super(ConditinsWatchdog, self).__init__()
         self.sensor = SENSORS[condition]()
         self.performer = PERFORMERS[performer]
         self.lifecycle_obj = Lifecycle(type=condition)
         self.conditions = Lifecycle(type=condition).conditions
         self.last_event = Lifecycle(type=condition).last_event
+        self.active = Lifecycle(type=condition).active
 
     def satisfy_conditions(self):
         value = self.sensor.read().moisture
         goal = self.conditions
-        print goal.min_value, value
-        # return value < goal.min_value  # TODO: we need 50% moisture (for example)
-        return False
+        print value, goal.min_value
+        return value < goal.min_value  # TODO: we need 50% moisture (for example)
 
     def satisfied_last_event(self, delta_minutes=30):
         time_object_to_compare = datetime.datetime.now() - datetime.timedelta(minutes=delta_minutes)
@@ -115,8 +117,8 @@ class ConditinsWatchdog(BaseWatchdog):
 
     def watch(self):
         print '>>> Condition watch'
-        print self.satisfy_conditions(), self.satisfied_last_event()
-        if self.satisfy_conditions() and self.satisfied_last_event():
+        print self.satisfy_conditions(), self.satisfied_last_event(), self.active
+        if self.satisfy_conditions() and self.satisfied_last_event() and self.active:
             self.performer.pulse(3)
             self.lifecycle_obj.last_event = datetime.datetime.now()
             self.lifecycle_obj.save()

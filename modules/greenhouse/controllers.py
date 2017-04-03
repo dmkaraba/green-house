@@ -96,10 +96,10 @@ class Fan(RelayBase):
     RELAY = config.relays['gpio_pins']['fans']
 
 
-class Pump(RelayBase):
+class Pumps(RelayBase):
     RELAY = [
-        config.relays['gpio_pins']['pump_1'],
-        config.relays['gpio_pins']['pump_2']
+        config.relays['gpio_pins']['pump_a'],
+        config.relays['gpio_pins']['pump_b']
     ]
 
     @classmethod
@@ -108,6 +108,14 @@ class Pump(RelayBase):
         time.sleep(duration)
         cls.off()
         cls.tear_down()
+
+
+class PumpA(Pumps):
+    RELAY = config.relays['gpio_pins']['pump_a']
+
+
+class PumpB(Pumps):
+    RELAY = config.relays['gpio_pins']['pump_b']
 
 
 class Servo(object):

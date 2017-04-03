@@ -22,9 +22,15 @@ def fan_watchdog():
     watch_for_fans()
 
 @celerybeat_app.task(ignore_result=True, queue='main')
-def soilmoisture_watchdog():
-    from handlers.jobs import watch_for_soilmoisture
-    watch_for_soilmoisture()
+def soilmoisture_a_watchdog():
+    from handlers.jobs import watch_for_soilmoisture_a
+    watch_for_soilmoisture_a()
+
+@celerybeat_app.task(ignore_result=True, queue='main')
+def soilmoisture_b_watchdog():
+    from handlers.jobs import watch_for_soilmoisture_b
+    watch_for_soilmoisture_b()
+
 
 # @celerybeat_app.task(ignore_result=True, queue='main')
 # def shoot_frame():
