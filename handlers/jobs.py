@@ -11,9 +11,7 @@ def insert_all_conditions():
     print '>>> insert all conditions <<<'
     answer = pull_data()
     measures = dict(answer)
-    print measures
     del measures['rc']
-    print measures
     SensorResults.create(**measures)
 
 
