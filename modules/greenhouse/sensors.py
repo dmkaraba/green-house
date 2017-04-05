@@ -179,8 +179,7 @@ class SoilMoistureSensors(BaseSensor):
     def read_one(self, num):
         raw = self.read_one_raw(num)
         result = map(self.volts_to_percents, [raw])[0]
-        SoilMoistureResult.moisture = result
-        return SoilMoistureResult
+        return SoilMoistureResult({'moisture': result})
 
 
 class SoilMoistureA(SoilMoistureSensors):

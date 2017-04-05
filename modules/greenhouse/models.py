@@ -36,9 +36,16 @@ class LifecycleDoc(DBDocument):
 
 ### SENSOR RESULTS ##############################
 
+class SoilMoistureConditions(EmbeddedDocument):
+    a = FloatField()
+    b = FloatField()
+    c = FloatField()
+    d = FloatField()
+
+
 class SoilConditions(EmbeddedDocument):
     temperature = FloatField()
-    moisture = FloatField()
+    moisture = EmbeddedDocumentField(SoilMoistureConditions)
 
 
 class AirOutsideConditions(EmbeddedDocument):

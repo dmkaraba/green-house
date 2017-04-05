@@ -40,4 +40,4 @@ if __name__ == '__main__':
     # watch_for_fans()
     # watch_for_lights()
     watch_for_soilmoisture_a()
-    watch_for_soilmoisture_b()
+    # watch_for_soilmoisture_b()

@@ -3,16 +3,14 @@
 
 from modules.greenhouse.camera import Camera
 from modules.greenhouse.lifecycle import TimerWatchdog, ConditinsWatchdog
-from utils.sensors.reader import pull_data
 from modules.greenhouse.objects import SensorResults
+from utils.sensors.reader import pull_data
 
 
 def insert_all_conditions():
     print '>>> insert all conditions <<<'
     answer = pull_data()
-    measures = dict(answer)
-    del measures['rc']
-    SensorResults.create(**measures)
+    SensorResults.create(**answer)
 
 
 def watch_for_lights():
@@ -38,4 +36,3 @@ def watch_for_soilmoisture_b():
 # def shoot_frame():
 #     print '>>> shoot frame <<<'
 #     Camera.shoot()
-

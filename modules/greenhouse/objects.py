@@ -3,7 +3,8 @@
 
 from modules.data.db import DBSharedProperty
 from modules.greenhouse.models import SensorResultsDoc, \
-                                      SoilConditions, AirInsideConditions, AirOutsideConditions, \
+                                      SoilConditions, SoilMoistureConditions,\
+                                      AirInsideConditions, AirOutsideConditions, \
                                       LifecycleDoc, TimerDoc, ConditionDoc
 
 
@@ -51,6 +52,7 @@ class SensorResults(object):
 
     ModelClass = SensorResultsDoc
     SoilCondModelClass = SoilConditions
+    SoilMoistureModelClass = SoilMoistureConditions
     AirInsideCondModelDoc = AirInsideConditions
     AirOutsideCondModelDoc = AirOutsideConditions
 
@@ -65,9 +67,14 @@ class SensorResults(object):
         new_model.save()
 
     @classmethod
-    def populate(cls, model, DS18B20_air, DS18B20_soil, BH1750, DHT22, SoilMoisture):
+    def populate(cls, model, DS18B20_air, DS18B20_soil, BH1750, DHT22,
+                 Soil_moisture_a, Soil_moisture_b, Soil_moisture_c, Soil_moisture_d, **kwargs):
+        soil_moisture = cls.SoilMoistureModelClass(a=Soil_moisture_a.moisture,
+                                                   b=Soil_moisture_b.moisture,
+                                                   c=Soil_moisture_c.moisture,
+                                                   d=Soil_moisture_d.moisture)
         model.soil = cls.SoilCondModelClass(temperature=DS18B20_soil.temperature,
-                                            moisture=SoilMoisture.moisture)
+                                            moisture=soil_moisture)
         model.air_outside = cls.AirOutsideCondModelDoc(temperature=DS18B20_air.temperature)
         model.air_inside = cls.AirInsideCondModelDoc(temperature=DHT22.temperature,
                                                      luminosity=BH1750.luminosity,

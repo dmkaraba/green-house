@@ -37,11 +37,11 @@ celerybeat:
       schedule:
         crontab:
           minute: '*/1'
-    soilmoisture_b_watchdog:
-      task: 'handlers.tasks.soilmoisture_b_watchdog'
-      schedule:
-        crontab:
-          minute: '*/1'
+#    soilmoisture_b_watchdog:
+#      task: 'handlers.tasks.soilmoisture_b_watchdog'
+#      schedule:
+#        crontab:
+#          minute: '*/1'
 #    shoot_frame:
 #      task: 'handlers.tasks.shoot_frame'
 #      schedule:
