@@ -134,7 +134,7 @@ class ConditinsWatchdog(BaseWatchdog):
             if date > last_event_date:
                 return True
             else:
-                return time_shifted > last_event_time
+                return time_shifted >= last_event_time
 
     def watch(self):
         print '>>> Condition watch: satisfy_conditions:{} satisfied_last_event:{}'.\
