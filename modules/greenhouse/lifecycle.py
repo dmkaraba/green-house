@@ -111,7 +111,7 @@ class ConditinsWatchdog(BaseWatchdog):
         print 'value avg:{} goal is:{}'.format(value, goal.min_value)
         return value < goal.min_value
 
-    def satisfied_last_event(self, shift_back=30):
+    def satisfied_last_event(self, shift_back=60):
         # date = DateComparison(datetime.datetime.now().year, datetime.datetime.now().month, datetime.datetime.now().day)
         # time_shifted_obj = datetime.datetime.now() - datetime.timedelta(minutes=shift_back)
         # time_shifted = TimeComparison(time_shifted_obj.hour, time_shifted_obj.minute)
