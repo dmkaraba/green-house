@@ -2,9 +2,12 @@
 # -*- coding: utf-8 -*-
 
 import datetime
+from datetime import date as dt
+from datetime import time as tm
 from modules.greenhouse.objects import Lifecycle
 from utils.mixins import DateComparison, TimeComparison
 from modules.const import PERFORMERS, SENSORS
+from utils.logger import info
 
 
 def compare_logic(a, b, op):
@@ -32,11 +35,11 @@ class BaseWatchdog(object):
         self.last_event = None
         self.active = None
 
-    def satisfy_time(self):
+    def satisfy_time(self):  # TODO: rebuild using dt/tm
         time = TimeComparison(datetime.datetime.now().hour, datetime.datetime.now().minute)
         timer_start_time = TimeComparison(self.timer.start_time.hour, self.timer.start_time.minute)
         timer_end_time = TimeComparison(self.timer.end_time.hour, self.timer.end_time.minute)
-        return timer_end_time >= time >= timer_start_time
+        return timer_end_time > time >= timer_start_time
 
     def satisfy_date(self):
         if self.timer.start_date and self.timer.end_date:
@@ -46,29 +49,30 @@ class BaseWatchdog(object):
         else:
             return True
 
-    def satisfied_last_event(self):
-        time = TimeComparison(datetime.datetime.now().hour, datetime.datetime.now().minute)
-        date = DateComparison(datetime.datetime.now().year, datetime.datetime.now().month, datetime.datetime.now().day)
-        if self.last_event:
-            last_event_time = TimeComparison(self.last_event.hour, self.last_event.minute)
-            last_event_date = DateComparison(self.last_event.year, self.last_event.month, self.last_event.day)
-            if date > last_event_date:
-                return True
-            else:
-                return time <= last_event_time
-        else:
-            return True
+    # def satisfied_last_event(self):
+    #     time = TimeComparison(datetime.datetime.now().hour, datetime.datetime.now().minute)
+    #     date = DateComparison(datetime.datetime.now().year, datetime.datetime.now().month, datetime.datetime.now().day)
+    #     if self.last_event:
+    #         last_event_time = TimeComparison(self.last_event.hour, self.last_event.minute)
+    #         last_event_date = DateComparison(self.last_event.year, self.last_event.month, self.last_event.day)
+    #         if date > last_event_date:
+    #             return True
+    #         else:
+    #             return time <= last_event_time
+    #     else:
+    #         return True
 
     def watch(self):
-        print '>>> Timer watch'
-        print self.satisfy_date(), self.satisfy_time(), self.satisfied_last_event(), self.active
-        if self.satisfy_date() and self.satisfy_time() and self.satisfied_last_event() and self.active:
+        print '>>> Timer watch: satisfy_date:{} satisfy_time:{}'.\
+            format(self.satisfy_date(), self.satisfy_time())
+        if self.satisfy_date() and self.satisfy_time() and self.active:
             if not self.lifecycle_obj.state:
                 self.performer.set_up()
                 self.performer.on()
                 self.lifecycle_obj.state = True
                 self.lifecycle_obj.last_event = datetime.datetime.now()
                 self.lifecycle_obj.save()
+                info('TimerWatchdog turned on')
         elif not self.satisfy_time() or not self.satisfy_date():
             if self.lifecycle_obj.state:
                 self.performer.set_up()
@@ -76,6 +80,7 @@ class BaseWatchdog(object):
                 self.lifecycle_obj.state = False
                 self.lifecycle_obj.last_event = datetime.datetime.now()
                 self.lifecycle_obj.save()
+                info('TimerWatchdog turned off')
 
 
 class TimerWatchdog(BaseWatchdog):
@@ -103,22 +108,39 @@ class ConditinsWatchdog(BaseWatchdog):
     def satisfy_conditions(self):
         value = self.sensor.read().moisture
         goal = self.conditions
-        print value, goal.min_value
-        return value < goal.min_value  # TODO: we need 50% moisture (for example)
+        print 'value avg:{} goal is:{}'.format(value, goal.min_value)
+        return value < goal.min_value
 
-    def satisfied_last_event(self, delta_minutes=30):
-        time_object_to_compare = datetime.datetime.now() - datetime.timedelta(minutes=delta_minutes)
-        time_to_compare = TimeComparison(time_object_to_compare.hour, time_object_to_compare.minute)
+    def satisfied_last_event(self, shift_back=30):
+        # date = DateComparison(datetime.datetime.now().year, datetime.datetime.now().month, datetime.datetime.now().day)
+        # time_shifted_obj = datetime.datetime.now() - datetime.timedelta(minutes=shift_back)
+        # time_shifted = TimeComparison(time_shifted_obj.hour, time_shifted_obj.minute)
+        # if self.last_event:
+        #     last_event_date = DateComparison(self.last_event.year, self.last_event.month, self.last_event.day)
+        #     last_event_time = TimeComparison(self.last_event.hour, self.last_event.minute)
+        #     print '---shifted', time_shifted
+        #     print '---last_ev', last_event_time
+        #     print '---boolean', time_shifted > last_event_time
+        #     if date > last_event_date:
+        #         return True
+        #     else:
+        #         return time_shifted > last_event_time
+        date = dt(datetime.datetime.now().year, datetime.datetime.now().month, datetime.datetime.now().day)
+        time_shifted_obj = datetime.datetime.now() - datetime.timedelta(minutes=shift_back)
+        time_shifted = tm(time_shifted_obj.hour, time_shifted_obj.minute)
         if self.last_event:
-            last_event_time = TimeComparison(self.last_event.hour, self.last_event.minute)
-            return time_to_compare > last_event_time
-        else:
-            return True
+            last_event_date = dt(self.last_event.year, self.last_event.month, self.last_event.day)
+            last_event_time = tm(self.last_event.hour, self.last_event.minute)
+            if date > last_event_date:
+                return True
+            else:
+                return time_shifted > last_event_time
 
     def watch(self):
-        print '>>> Condition watch'
-        print self.satisfy_conditions(), self.satisfied_last_event(), self.active
+        print '>>> Condition watch: satisfy_conditions:{} satisfied_last_event:{}'.\
+            format(self.satisfy_conditions(), self.satisfied_last_event())
         if self.satisfy_conditions() and self.satisfied_last_event() and self.active:
             self.performer.pulse(7)
             self.lifecycle_obj.last_event = datetime.datetime.now()
             self.lifecycle_obj.save()
+            info('water turned on')

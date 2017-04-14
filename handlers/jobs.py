@@ -28,9 +28,9 @@ def watch_for_soilmoisture_a():
     ConditinsWatchdog('soil_moisture_a', 'pump_a').watch()
 
 
-def watch_for_soilmoisture_b():
-    print '>>> perform soilmoisture B <<<'
-    ConditinsWatchdog('soil_moisture_b', 'pump_b').watch()
+# def watch_for_soilmoisture_b():
+#     print '>>> perform soilmoisture B <<<'
+#     ConditinsWatchdog('soil_moisture_b', 'pump_b').watch()
 
 
 # def shoot_frame():

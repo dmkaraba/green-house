@@ -47,8 +47,6 @@ celerybeat:
 #      schedule:
 #        crontab:
 #          minute: '*/20'
-#      options:
-#        queue: 'main'
 
 sensors:
   gpio_pins:
