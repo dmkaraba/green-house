@@ -7,7 +7,7 @@ from web_interface.web_events.config_requests import CreateLifecycle, Timer, Con
 from datetime import datetime
 from handlers.jobs import watch_for_soilmoisture_a, watch_for_fans, watch_for_lights
 from modules.greenhouse.controllers import PumpA, PumpB
-from modules.greenhouse.sensors import SoilMoistureSensors
+from modules.greenhouse.sensors import SoilMoistureA, SoilMoistureB, SoilMoistureSensors
 
 
 T = Timer({
@@ -27,9 +27,10 @@ data = {
 
 
 def test_soilMo():
-    print SoilMoistureSensors().read_all_raw()
-    print SoilMoistureSensors().read()
 
+    print SoilMoistureA().read().moisture
+    print SoilMoistureB().read().moisture
+    SoilMoistureSensors().read()
 
 if __name__ == '__main__':
     test_soilMo()

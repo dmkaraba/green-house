@@ -182,15 +182,15 @@ class SoilMoistureSensors(BaseSensor):
 
 class SoilMoistureA(SoilMoistureSensors):
     def read(self):
-        result1 = self.read_one(2)
-        result2 = self.read_one(3)
+        result1 = self.read_one(0)
+        result2 = self.read_one(1)
         avg = (result1.moisture + result2.moisture)/2
         return SoilMoistureResult({'moisture': avg})
 
 
 class SoilMoistureB(SoilMoistureSensors):
     def read(self):
-        result1 = self.read_one(0)
-        result2 = self.read_one(1)
+        result1 = self.read_one(2)
+        result2 = self.read_one(3)
         avg = (result1.moisture + result2.moisture)/2
         return SoilMoistureResult({'moisture': avg})
