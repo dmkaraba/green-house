@@ -5,8 +5,10 @@ from time import sleep
 from modules.greenhouse.objects import Lifecycle
 from web_interface.web_events.config_requests import CreateLifecycle, Timer, Conditions
 from datetime import datetime
-from handlers.jobs import watch_for_soilmoisture_a, watch_for_soilmoisture_b, watch_for_fans, watch_for_lights
+from handlers.jobs import watch_for_soilmoisture_a, watch_for_fans, watch_for_lights
 from modules.greenhouse.controllers import PumpA, PumpB
+from modules.greenhouse.sensors import SoilMoistureSensors
+
 
 T = Timer({
     'start_time': datetime(2017, 1, 1, 7, 0, 0),
@@ -24,20 +26,17 @@ data = {
     }
 
 
-# def pump_test():
-#     sleep(6)
-#     PumpA.pulse(3)
-#     sleep(1)
-#     PumpB.pulse(3)
-#
-#
-# pump_test()
+def test_soilMo():
+    print SoilMoistureSensors().read_all_raw()
+    print SoilMoistureSensors().read()
+
 
 if __name__ == '__main__':
+    test_soilMo()
     # lc = CreateLifecycle(data)
     # Lifecycle.create(**lc)
 
     # watch_for_fans()
     # watch_for_lights()
-    watch_for_soilmoisture_a()
+    # watch_for_soilmoisture_a()
     # watch_for_soilmoisture_b()

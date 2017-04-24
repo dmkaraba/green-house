@@ -130,11 +130,9 @@ class DS18B20_Soil(DS18B20):
 class SoilMoistureSensors(BaseSensor):
 
     NAME = 'Soil moisture'
-
     GAIN = 1
-
-    MIN_VOLTS = 0
-    MAX_VOLTS = 25600
+    MIN_VOLTS = 4700
+    MAX_VOLTS = 18000
 
     adc = Adafruit_ADS1x15.ADS1115()
 
@@ -156,8 +154,8 @@ class SoilMoistureSensors(BaseSensor):
         """
         Converting raw volts to moisture percents.
         """
-        old_min = self.MAX_VOLTS
-        old_max = self.MIN_VOLTS
+        old_min = self.MIN_VOLTS
+        old_max = self.MAX_VOLTS
         new_min = 0
         new_max = 100
 
@@ -184,15 +182,15 @@ class SoilMoistureSensors(BaseSensor):
 
 class SoilMoistureA(SoilMoistureSensors):
     def read(self):
-        result1 = self.read_one(0)
-        result2 = self.read_one(1)
+        result1 = self.read_one(2)
+        result2 = self.read_one(3)
         avg = (result1.moisture + result2.moisture)/2
         return SoilMoistureResult({'moisture': avg})
 
 
 class SoilMoistureB(SoilMoistureSensors):
     def read(self):
-        result1 = self.read_one(2)
-        result2 = self.read_one(3)
+        result1 = self.read_one(0)
+        result2 = self.read_one(1)
         avg = (result1.moisture + result2.moisture)/2
         return SoilMoistureResult({'moisture': avg})
